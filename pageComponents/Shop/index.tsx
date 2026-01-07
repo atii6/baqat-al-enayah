@@ -1,6 +1,5 @@
 import React from "react";
-import { Search, SlidersHorizontal, Sparkles } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { SlidersHorizontal, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -17,6 +16,7 @@ import ViewModeToggle from "./ViewModeToggle";
 import EmptyProductList from "./EmptyProductList";
 import Typography from "@/components/ui/typography";
 import { Grid, GridItem } from "@/components/grid";
+import SearchField from "@/components/shared/SearchField";
 
 const categories = [
   "All",
@@ -135,7 +135,7 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden my-8">
-      <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-6">
+      <div className="relative z-10 px-4 md:px-8 lg:px-16 py-16">
         <LeafCluster />
         {/* Page Header */}
         <div className="text-center mt-12 mb-8 animate-fade-in-up space-y-3 ">
@@ -158,18 +158,23 @@ const Shop = () => {
         </div>
 
         {/* Search and Filter Bar */}
-        <div className="bg-card rounded-2xl shadow-sm p-4 mb-8 animate-fade-in-up animation-delay-100">
+        <div className="bg-card rounded-md shadow-sm p-4 mb-8 animate-fade-in-up animation-delay-100">
           <Grid>
             {/* Search Input */}
             <GridItem className="relative flex-1 col-span-6 md:col-span-4 lg:col-span-7">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <SearchField
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                inputPlaceholder="Search products..."
+              />
+              {/* <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 h-12 rounded-md border-border bg-background"
-              />
+              /> */}
             </GridItem>
 
             {/* Category Select */}

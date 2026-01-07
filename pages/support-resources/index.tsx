@@ -1,5 +1,5 @@
-import SupportAndResourcesPage from "@/pageComponents/SupportAndResources";
 import React from "react";
+import SupportAndResourcesPage from "@/pageComponents/SupportAndResources";
 
 function SupportAndResources() {
   return <SupportAndResourcesPage />;

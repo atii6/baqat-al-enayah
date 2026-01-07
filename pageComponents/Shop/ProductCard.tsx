@@ -16,7 +16,7 @@ type Props = {
 function ProductCard({ viewMode, index, product }: Props) {
   return (
     <div
-      className={`bg-card rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in-up ${
+      className={`bg-card rounded-md shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in-up ${
         viewMode === "list" ? "flex" : ""
       }`}
       style={{ animationDelay: `${(index + 3) * 50}ms` }}

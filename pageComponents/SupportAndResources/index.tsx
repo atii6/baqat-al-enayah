@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import BlogsHero from "./BlogsHero";
 import FeaturedBlogCard from "./FeaturedBlogCard";
 import CategoryFilters from "./CategoryFilters";
 import BlogCard from "./BlogCard";
 import NoBlogsFoundCard from "./NoBlogsFoundCard";
+import PagesHeroSection from "@/components/shared/PagesHeroSection";
+import SearchField from "@/components/shared/SearchField";
 
 export const BLOG_POSTS = [
   {
@@ -168,7 +168,11 @@ function SupportAndResourcesPage() {
   return (
     <div className="min-h-screen">
       {/* Header Section */}
-      <BlogsHero />
+      <PagesHeroSection
+        title="Care & Compassion Journals"
+        description="Stories, guidance, and insights to support patients, families, and
+          those who care for them."
+      />
 
       {/* Main Content */}
       <div className="relative px-4 md:px-8 lg:px-16 py-16">
@@ -176,13 +180,10 @@ function SupportAndResourcesPage() {
 
         <div className="mb-12 animate-fade-in-delay-2">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-            {/* Updated input focus border to use primary color */}
-            <Input
-              placeholder="Search articles, authors, topics..."
-              className="w-full pl-12 pr-4 py-3 bg-white border-2 border-transparent hover:border-secondary/30 focus:border-primary transition-all duration-300 shadow-lg"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+            <SearchField
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              inputPlaceholder="Search articles, authors, topics..."
             />
           </div>
         </div>
@@ -216,7 +217,7 @@ function SupportAndResourcesPage() {
 
       {/* Footer CTA */}
       {/* Updated footer gradient to use primary and secondary brand colors */}
-      <div className="mt-20 bg-linear-to-r from-primary via-secondary to-primary text-white py-16 px-6">
+      <div className="mt-20 bg-linear-to-r from-primary via-secondary to-primary text-white py-16 px-6 rounded-t-4xl">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-3xl font-bold mb-4">
             Subscribe for More Support Resources

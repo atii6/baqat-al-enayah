@@ -36,7 +36,6 @@ function BlogCard({ blogPost, index, onLike, likedPosts }: Props) {
             height={200}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="absolute top-4 right-4">
             {/* Updated category badge to use primary and secondary colors */}
             <Badge className="bg-linear-to-r from-primary to-secondary text-white border-0 text-xs">

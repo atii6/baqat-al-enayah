@@ -4,30 +4,28 @@ import { Card } from "@/components/ui/card";
 import Typography from "@/components/ui/typography";
 import EllipsisTypography from "@/components/shared/EllipsisTypography";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import type { StoryType } from "@/utilities/types/storyTypes";
 
 type FamilyStoryCardProps = {
-  registryDetails: {
-    family_photo: string;
-    registry_title: string;
-    registry_description: string;
-    organizer_name: string;
-    story: string;
-  };
+  story: StoryType;
 };
 
-function FamilyStoryCard({ registryDetails }: FamilyStoryCardProps) {
+function FamilyStoryCard({ story }: FamilyStoryCardProps) {
+  const router = useRouter();
+
   const {
     registry_title,
     registry_description,
     organizer_name,
-    story,
     family_photo,
-  } = registryDetails;
+    category,
+  } = story;
 
   return (
-    <Card className="bg-card p-6 rounded-xl border-0 shadow-md min-h-80">
+    <Card className="bg-card p-6 rounded-md border-0 shadow-md min-h-80">
       {/* Family image area */}
-      <div className="flex items-start gap-6">
+      <div className="flex items-start gap-6 relative">
         <div className="w-32 h-24 bg-linear-to-br from-accent to-leaf-light rounded-2xl flex items-center shadow-md justify-center overflow-hidden">
           <Image
             src={family_photo}
@@ -42,9 +40,6 @@ function FamilyStoryCard({ registryDetails }: FamilyStoryCardProps) {
             <Typography variant="h3" className="font-semibold text-foreground">
               {registry_title}
             </Typography>
-            {/* <span className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
-                <Heart className="w-5 h-5 text-primary" />
-              </span> */}
           </div>
           <EllipsisTypography
             title={registry_description}
@@ -57,6 +52,11 @@ function FamilyStoryCard({ registryDetails }: FamilyStoryCardProps) {
             {organizer_name}
           </Typography>
         </div>
+        {category && (
+          <span className="bg-linear-to-r from-primary to-secondary text-primary-foreground text-xs font-medium px-2 py-1 rounded-full">
+            {category}
+          </span>
+        )}
       </div>
 
       {/* Our Story Section */}
@@ -68,14 +68,18 @@ function FamilyStoryCard({ registryDetails }: FamilyStoryCardProps) {
                 Our Story
               </Typography>
               <EllipsisTypography
-                title={story}
-                className="text-sm text-muted-foreground line-clamp-3"
+                title={story.story}
+                className="text-sm text-muted-foreground line-clamp-2"
               >
-                {story}
+                {story.story}
               </EllipsisTypography>
             </div>
 
-            <Button variant="link" className="p-0 cursor-pointer">
+            <Button
+              variant="link"
+              className="p-0 cursor-pointer"
+              onClick={() => router.push(`/care-stories/${story.id}`)}
+            >
               Read More
             </Button>
           </div>

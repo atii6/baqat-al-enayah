@@ -42,7 +42,7 @@ function ContactForm() {
   return (
     <div className="relative z-10">
       <div className="flex items-center gap-3 mb-8">
-        <div className="p-3 rounded-md bg-primary flex items-center justify-center">
+        <div className="p-3 rounded-2xl bg-primary flex items-center justify-center">
           <Send className="text-primary-foreground" />
         </div>
         <div>

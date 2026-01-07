@@ -1,8 +1,15 @@
 import React from "react";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
+import Link from "next/link";
 
 const Footer: React.FC = () => {
-  const links = ["About", "FAQ", "Registry", "Privacy", "Contact"];
+  const footerTabs = [
+    { name: "Shop", path: "/shop" },
+    { name: "Support & Resources", path: "/support-resources" },
+    { name: "Care Stories", path: "/care-stories" },
+    { name: "FAQ", path: "/FAQ" },
+    { name: "Contact", path: "/contact" },
+  ];
 
   const socialIcons = [
     { icon: Linkedin, label: "Twitter" },
@@ -15,14 +22,14 @@ const Footer: React.FC = () => {
       <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Navigation Links */}
         <nav className="flex flex-wrap items-center gap-6">
-          {links.map((link, index) => (
-            <a
+          {footerTabs.map((link, index) => (
+            <Link
               key={`${link}-${index}`}
-              href="#"
+              href={link.path}
               className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
             >
-              {link}
-            </a>
+              {link.name}
+            </Link>
           ))}
         </nav>
 
