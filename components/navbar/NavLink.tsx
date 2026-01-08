@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "@/lib/utils";
 import Link, { type LinkProps } from "next/link";
 
 interface NavLinkCompatProps extends Omit<LinkProps, "className"> {

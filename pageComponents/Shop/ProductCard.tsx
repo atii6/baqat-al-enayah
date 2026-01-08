@@ -25,8 +25,8 @@ function ProductCard({ viewMode, index, product }: Props) {
         <Image
           src={product.image}
           alt={product.name}
-          width={200}
-          height={200}
+          width={400}
+          height={400}
           className={`w-full object-cover ${
             viewMode === "list" ? "h-full" : "h-48"
           }`}

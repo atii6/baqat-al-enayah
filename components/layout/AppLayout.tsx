@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import type { AppProps } from "next/app";
 import { useSession } from "next-auth/react";
 import { Spinner } from "../ui/spinner";
+import { CreateCareRegistryModalProvider } from "@/context/CreateRegistryModalContext";
 
 function AppLayout({ Component, pageProps }: AppProps) {
   const { data: session, status } = useSession();
@@ -24,9 +25,11 @@ function AppLayout({ Component, pageProps }: AppProps) {
     });
 
     return (
-      <PreAuthScreenLayout>
-        <Component {...pageProps} />
-      </PreAuthScreenLayout>
+      <CreateCareRegistryModalProvider>
+        <PreAuthScreenLayout>
+          <Component {...pageProps} />
+        </PreAuthScreenLayout>
+      </CreateCareRegistryModalProvider>
     );
   }
 

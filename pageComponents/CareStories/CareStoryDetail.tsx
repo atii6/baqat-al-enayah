@@ -10,15 +10,12 @@ import {
   Users,
   Target,
   Calendar,
-  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import type { StoryType } from "@/utilities/types/storyTypes";
 import Image from "next/image";
 import { DUMMY_STORIES } from "../LandingPage/FamilyCardCarousel";
 import { useRouter } from "next/router";
-import { Badge } from "@/components/ui/badge";
 import ContributionCTA from "./ContributionCTA";
 import RelatedStoryCard from "./RelatedStoryCard";
 

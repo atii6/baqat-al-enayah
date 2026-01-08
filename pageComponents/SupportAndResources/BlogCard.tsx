@@ -32,8 +32,8 @@ function BlogCard({ blogPost, index, onLike, likedPosts }: Props) {
           <Image
             src={blogPost.image || "/placeholder.svg"}
             alt={blogPost.title}
-            width={200}
-            height={200}
+            width={500}
+            height={500}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
           <div className="absolute top-4 right-4">

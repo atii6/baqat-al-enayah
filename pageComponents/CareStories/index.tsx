@@ -5,6 +5,7 @@ import PagesHeroSection from "@/components/shared/PagesHeroSection";
 import FamilyStoryCard from "../LandingPage/HeroSection/FamilyStoryCard";
 import Typography from "@/components/ui/typography";
 import SearchField from "@/components/shared/SearchField";
+import { useCreateCareRegistryModal } from "@/context/CreateRegistryModalContext";
 
 export const STORY_CATEGORIES = [
   "All",
@@ -20,6 +21,7 @@ export const STORY_CATEGORIES = [
 function CareStoriesPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("All");
+  const { openModal } = useCreateCareRegistryModal();
 
   const filteredStories = React.useMemo(() => {
     return DUMMY_STORIES.filter((story) => {
@@ -142,6 +144,7 @@ function CareStoriesPage() {
           <Button
             variant="outline"
             className="cursor-pointer bg-primary text-white hover:text-primary border-0 font-semibold rounded-md px-8 h-12"
+            onClick={() => openModal()}
           >
             Create Your Registry
           </Button>

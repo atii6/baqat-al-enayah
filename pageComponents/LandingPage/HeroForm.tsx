@@ -2,10 +2,12 @@ import FormButton from "@/components/form/Fields/FormButton";
 import FormTextField from "@/components/form/Fields/FormTextField";
 import Form from "@/components/form/Form";
 import Typography from "@/components/ui/typography";
+import { useCreateCareRegistryModal } from "@/context/CreateRegistryModalContext";
 import React from "react";
 import z from "zod";
 
 function HeroForm() {
+  const { openModal } = useCreateCareRegistryModal();
   const intialValues = {
     first_name: "",
     last_name: "",
@@ -22,6 +24,7 @@ function HeroForm() {
 
   const handleSubmit = (value: ValidationSchemaType) => {
     console.log(value);
+    openModal(value);
   };
 
   return (
@@ -52,18 +55,21 @@ function HeroForm() {
             label="First Name"
             placeholder="John"
             labelStyles="text-white"
+            className="text-white"
           />
           <FormTextField
             name="last_name"
             label="Last Name"
             placeholder="Doe"
             labelStyles="text-white"
+            className="text-white"
           />
           <FormTextField
             name="email"
             label="Email"
             placeholder="john.doe@example.com"
             labelStyles="text-white"
+            className="text-white"
           />
           <FormButton className="w-full mt-4">
             Create a Care Registry

@@ -192,7 +192,7 @@ function BlogDetailPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/blog">
+            <Link href="/support-resources">
               <Button
                 variant="outline"
                 className="cursor-pointer bg-primary text-white hover:text-primary border-0 font-semibold rounded-md px-8 h-12"
@@ -200,12 +200,14 @@ function BlogDetailPage() {
                 View All Articles
               </Button>
             </Link>
-            <Button
-              variant="outline"
-              className="cursor-pointer bg-primary text-white hover:text-primary border-0 font-semibold rounded-md px-8 h-12"
-            >
-              Contact Support
-            </Button>
+            <Link href="/contact">
+              <Button
+                variant="outline"
+                className="cursor-pointer bg-primary text-white hover:text-primary border-0 font-semibold rounded-md px-8 h-12"
+              >
+                Contact Support
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
