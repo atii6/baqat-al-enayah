@@ -19,6 +19,8 @@ import Image from "next/image";
 import { DUMMY_STORIES } from "../LandingPage/FamilyCardCarousel";
 import { useRouter } from "next/router";
 import { Badge } from "@/components/ui/badge";
+import ContributionCTA from "./ContributionCTA";
+import RelatedStoryCard from "./RelatedStoryCard";
 
 export function CareStoryDetailPage() {
   const router = useRouter();
@@ -173,19 +175,7 @@ export function CareStoryDetailPage() {
         </div>
 
         {/* Donate CTA */}
-        <div className="bg-linear-to-r from-primary to-secondary text-white rounded-md p-8 md:p-12 mb-12 animate-fade-in-delay-3">
-          <h3 className="text-2xl font-bold mb-3">Help This Family</h3>
-          <p className="text-white/90 mb-6">
-            Your contribution makes a direct impact on this family&apos;s
-            wellbeing and recovery.
-          </p>
-          <Button
-            variant="outline"
-            className="cursor-pointer bg-primary text-white hover:text-primary font-semibold px-8 shadow-md border"
-          >
-            Contribute Now
-          </Button>
-        </div>
+        <ContributionCTA />
 
         {/* Related Stories */}
         {relatedStories.length > 0 && (
@@ -194,42 +184,12 @@ export function CareStoryDetailPage() {
               Similar Stories
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
-              {relatedStories.map((relatedStory: StoryType, index: number) => (
-                <Link
+              {relatedStories.map((relatedStory, index) => (
+                <RelatedStoryCard
                   key={relatedStory.id}
-                  href={`/stories/${relatedStory.id}`}
-                  className="group"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <Card className="h-full overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-slate-200 cursor-pointer flex flex-col">
-                    <div className="relative h-40 overflow-hidden bg-slate-100">
-                      <Image
-                        src={relatedStory.family_photo || "/placeholder.svg"}
-                        alt={relatedStory.registry_title}
-                        width={250}
-                        height={250}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <Badge className="absolute top-4 right-4 bg-linear-to-r from-primary to-secondary text-white border-0 text-xs">
-                        {relatedStory.category}
-                      </Badge>
-                    </div>
-                    <div className="p-6 grow flex flex-col">
-                      <h4 className="font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                        {relatedStory.registry_title}
-                      </h4>
-                      <p className="text-sm text-slate-600 mb-4 line-clamp-2 grow">
-                        {relatedStory.registry_description}
-                      </p>
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                        <span className="text-xs text-slate-500">
-                          60% funded
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
+                  relatedStory={relatedStory}
+                  index={index}
+                />
               ))}
             </div>
           </div>
