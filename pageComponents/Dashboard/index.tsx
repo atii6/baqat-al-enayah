@@ -1,7 +1,14 @@
 import React from "react";
+import SetupProcessSection from "./SetupProcessSection";
+import PreviousTransactionsCard from "./PreviousTransactionsCard";
 
 function DashboardPage() {
-  return <div>DashboardPage</div>;
+  return (
+    <>
+      <SetupProcessSection />
+      <PreviousTransactionsCard />
+    </>
+  );
 }
 
 export default DashboardPage;

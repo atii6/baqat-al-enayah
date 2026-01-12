@@ -19,7 +19,7 @@ function AppLayout({ Component, pageProps }: AppProps) {
 
   const isAuthenticated = !!session;
 
-  if (!isAuthenticated) {
+  if (isAuthenticated) {
     const PreAuthScreenLayout = dynamic(() => import("./PreAuthScreenLayout"), {
       ssr: false,
     });

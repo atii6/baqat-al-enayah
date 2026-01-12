@@ -2,7 +2,15 @@ import { ForwardRefExoticComponent, RefAttributes } from "react";
 import type { LucideProps } from "lucide-react";
 import { USER_ROLES } from "@/constants";
 
-export type RouteKeys = "HOME" | "ABOUT" | "PUBLIC_REGISTRY" | "DASHBOARD";
+export type RouteKeys =
+  | "HOME"
+  | "ABOUT"
+  | "PUBLIC_REGISTRY"
+  | "DASHBOARD"
+  | "FRIENDS"
+  | "EXPLORE"
+  | "MESSAGES"
+  | "REGISTRY_SETUP_STEPS";
 
 export type RoutesConfig = {
   allowedRoles: (typeof USER_ROLES)[keyof typeof USER_ROLES][];
