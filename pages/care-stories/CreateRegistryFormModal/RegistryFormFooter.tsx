@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { GridItem } from "@/components/grid";
 
 type Props = {
-  currentStep: number;
+  currentStep?: number;
   handleNext: () => void;
   handleBack: () => void;
 };
@@ -15,7 +15,7 @@ function RegistryFormFooter({ currentStep, handleNext, handleBack }: Props) {
 
   return (
     <GridItem className="flex justify-between pt-6">
-      {currentStep > 1 ? (
+      {currentStep && currentStep > 1 ? (
         <Button type="button" variant="outline" onClick={handleBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
@@ -24,7 +24,7 @@ function RegistryFormFooter({ currentStep, handleNext, handleBack }: Props) {
         <div />
       )}
 
-      {currentStep < 3 && (
+      {currentStep && currentStep < 3 && (
         <Button
           type="button"
           onClick={async () => {

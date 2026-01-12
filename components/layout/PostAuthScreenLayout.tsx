@@ -10,6 +10,13 @@ import { REGISTRY_STEPS } from "@/constants/registrySteps";
 import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
 
+export const routeToStepMap: Record<string, number> = {
+  "/personal-details": 1,
+  "/build-care-registry": 2,
+  "/preview-and-publish": 3,
+  "/share-and-receive": 4,
+};
+
 type PostAuthScreenLayoutProps = { children: React.ReactNode };
 
 function PostAuthScreenLayout({ children }: PostAuthScreenLayoutProps) {
@@ -17,13 +24,6 @@ function PostAuthScreenLayout({ children }: PostAuthScreenLayoutProps) {
   const pathname = usePathname();
   const isRegistrySteps =
     router.pathname === ROUTES.REGISTRY_SETUP_STEPS.pathName;
-
-  const routeToStepMap: Record<string, number> = {
-    "/personal-details": 1,
-    "/build-care-registry": 2,
-    "/preview-and-publish": 3,
-    "/share-and-receive": 4,
-  };
 
   const currentStepId = routeToStepMap[pathname] || 1;
   const currentStep =
@@ -53,7 +53,7 @@ function PostAuthScreenLayout({ children }: PostAuthScreenLayoutProps) {
     <div className="min-h-screen">
       <SidebarProvider>
         <AppSidebar />
-        <main className="min-h-screen w-full">
+        <main className="min-h-screen w-full organic-bg">
           <DashboardHeader
             HeaderTitleComponent={
               isRegistrySteps ? headerTitleComponent : undefined
