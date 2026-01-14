@@ -63,7 +63,7 @@ const FormTextField: React.FC<FormTextFieldProps> = ({
             />
 
             {!disableGutter && (
-              <div className="h-2 mt-1">
+              <div className="h-2 my-2">
                 <ErrorText message={fieldState.error?.message || ""} />
               </div>
             )}

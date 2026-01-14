@@ -6,6 +6,17 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["images.unsplash.com"],
   },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@": __dirname,
+      "@models": __dirname + "/models",
+      "@controllers": __dirname + "/server/controllers",
+      "@handlers": __dirname + "/server/handlers",
+      "@config": __dirname + "/config",
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

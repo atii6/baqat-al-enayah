@@ -13,8 +13,13 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "paths": {
-      "@/*": ["./*"]
+     "paths": {
+      "@/*": ["./*"],
+      "@models/*": ["./models/*"],
+      "@controllers/*": ["./server/controllers/*"],
+      "@handlers/*": ["./server/handlers/*"],
+      "@config/*": ["./config/*"],
+      "@utils/*": ["./utils/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

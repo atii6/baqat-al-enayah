@@ -25,7 +25,16 @@ const Navigation = () => {
     { name: "Support & Resources", path: "/support-resources" },
     { name: "Care Stories", path: "/care-stories" },
     { name: "Contact", path: "/contact" },
+    { name: "Sign In" },
   ];
+
+  const handleNavTabClick = (path: string) => {
+    if (!path) {
+      return;
+    } else {
+      router.push(path || "");
+    }
+  };
 
   return (
     <div
@@ -38,13 +47,15 @@ const Navigation = () => {
     >
       {navTabs.map((tab) => {
         const isActive =
-          tab.path === "/" ? pathName === "/" : pathName.startsWith(tab.path);
+          tab.path === "/"
+            ? pathName === "/"
+            : pathName.startsWith(tab.path || "");
 
         return (
           <Button
             key={tab.path}
             variant="link"
-            onClick={() => router.push(tab.path)}
+            onClick={() => handleNavTabClick(tab.path || "")}
             className={cn(
               "px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer",
               isActive

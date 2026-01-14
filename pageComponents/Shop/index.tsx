@@ -12,93 +12,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { LeafCluster } from "../LandingPage/LeafDecoration";
 import SelectField from "@/components/shared/fields/select-field";
 import ProductCard from "./ProductCard";
-import ViewModeToggle from "./ViewModeToggle";
 import EmptyProductList from "./EmptyProductList";
 import Typography from "@/components/ui/typography";
 import { Grid, GridItem } from "@/components/grid";
 import SearchField from "@/components/shared/SearchField";
+import useGetAllProducts from "@/hooks/product/useGetAllProducts";
+import useGetAllProductTypes from "@/hooks/product-types/useGetAllProductTypes";
+import type { ProductTypesType } from "@/utilities/types/product-type";
 
-const categories = [
-  "All",
-  "Electronics",
-  "Clothing",
-  "Home & Garden",
-  "Sports",
-  "Books",
-];
 const priceRanges = [
   "All Prices",
   "Under $25",
   "$25 - $50",
   "$50 - $100",
   "Over $100",
-];
-
-const products = [
-  {
-    id: 1,
-    name: "Wireless Headphones",
-    price: 79.99,
-    category: "Electronics",
-    image:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
-  },
-  {
-    id: 2,
-    name: "Running Shoes",
-    price: 129.99,
-    category: "Sports",
-    image:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop",
-  },
-  {
-    id: 3,
-    name: "Leather Wallet",
-    price: 45.0,
-    category: "Clothing",
-    image:
-      "https://images.unsplash.com/photo-1627123424574-724758594e93?w=300&h=300&fit=crop",
-  },
-  {
-    id: 4,
-    name: "Smart Watch",
-    price: 199.99,
-    category: "Electronics",
-    image:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
-  },
-  {
-    id: 5,
-    name: "Plant Pot Set",
-    price: 34.99,
-    category: "Home & Garden",
-    image:
-      "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=300&h=300&fit=crop",
-  },
-  {
-    id: 6,
-    name: "Bestseller Novel",
-    price: 15.99,
-    category: "Books",
-    image:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=300&fit=crop",
-  },
-  {
-    id: 7,
-    name: "Yoga Mat",
-    price: 29.99,
-    category: "Sports",
-    image:
-      "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=300&h=300&fit=crop",
-  },
-  {
-    id: 8,
-    name: "Desk Lamp",
-    price: 55.0,
-    category: "Home & Garden",
-    image:
-      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=300&h=300&fit=crop",
-  },
 ];
 
 const filterByPrice = (price: number, range: string): boolean => {
@@ -117,21 +44,57 @@ const filterByPrice = (price: number, range: string): boolean => {
 };
 
 const Shop = () => {
+  const { data: allProducts } = useGetAllProducts();
+  const { data: productCategory } = useGetAllProductTypes();
+
+  const categories = React.useMemo(() => {
+    if (!productCategory) return ["All"];
+
+    return ["All", ...productCategory.map((category) => category.name)];
+  }, [productCategory]);
+
+  const categoryMap: Record<number, ProductTypesType> =
+    productCategory?.reduce<Record<number, ProductTypesType>>(
+      (acc, category) => {
+        acc[category.id] = category;
+        return acc;
+      },
+      {}
+    ) ?? {};
+
+  const products = allProducts?.map((product) => {
+    return {
+      id: product.id,
+      name: product.name,
+      price: product.price || 0,
+      image: product.image_url || "",
+      category: product.category
+        ? categoryMap?.[product.category]?.name
+        : "Uncategorized",
+    };
+  });
+
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("All");
   const [selectedPrice, setSelectedPrice] = React.useState("All Prices");
-  const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = React.useState(false);
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || product.category === selectedCategory;
-    const matchesPrice = filterByPrice(product.price, selectedPrice);
-    return matchesSearch && matchesCategory && matchesPrice;
-  });
+  const filteredProducts = React.useMemo(
+    () =>
+      products?.filter((product) => {
+        const matchesSearch = product.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+        const matchesCategory =
+          selectedCategory === "All" || product.category === selectedCategory;
+
+        const matchesPrice = filterByPrice(product.price || 0, selectedPrice);
+
+        return matchesSearch && matchesCategory && matchesPrice;
+      }),
+    [products, searchQuery, selectedCategory, selectedPrice]
+  );
 
   return (
     <div className="min-h-screen relative overflow-hidden my-8">
@@ -167,18 +130,10 @@ const Shop = () => {
                 setSearchQuery={setSearchQuery}
                 inputPlaceholder="Search products..."
               />
-              {/* <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-12 rounded-md border-border bg-background"
-              /> */}
             </GridItem>
 
             {/* Category Select */}
-            <GridItem className="col-span-6 md:col-span-3 lg:col-span-2">
+            <GridItem className="col-span-6 md:col-span-3 lg:col-span-3">
               <SelectField
                 value={selectedCategory}
                 onChange={setSelectedCategory}
@@ -207,11 +162,6 @@ const Shop = () => {
                 <SlidersHorizontal className="w-5 h-5 mr-2" />
                 Filters
               </Button>
-            </GridItem>
-
-            {/* View Mode Toggle */}
-            <GridItem className="col-span-1 md:col-span-2 lg:col-span-1">
-              <ViewModeToggle viewMode={viewMode} setViewMode={setViewMode} />
             </GridItem>
           </Grid>
 
@@ -248,7 +198,7 @@ const Shop = () => {
           <p className="text-muted-foreground">
             Showing{" "}
             <span className="text-foreground font-medium">
-              {filteredProducts.length}
+              {filteredProducts?.length}
             </span>{" "}
             products
           </p>
@@ -267,24 +217,15 @@ const Shop = () => {
 
         {/* Products Grid */}
         <div
-          className={`grid gap-6 mb-12 ${
-            viewMode === "grid"
-              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              : "grid-cols-1"
-          }`}
+          className={`grid gap-6 mb-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"`}
         >
-          {filteredProducts.map((product, index) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              index={index}
-              viewMode={viewMode}
-            />
+          {filteredProducts?.map((product, index) => (
+            <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>
 
         {/* Empty State */}
-        {filteredProducts.length === 0 && <EmptyProductList />}
+        {filteredProducts?.length === 0 && <EmptyProductList />}
       </div>
     </div>
   );

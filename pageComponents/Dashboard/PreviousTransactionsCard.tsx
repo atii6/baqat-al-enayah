@@ -1,6 +1,5 @@
 import React from "react";
 import { Grid, GridItem } from "@/components/grid";
-import { Button } from "@/components/ui/button";
 import { TransactionCard } from "./TransactionCard";
 import Typography from "@/components/ui/typography";
 import CustomTabs from "@/components/shared/CustomTabs";
@@ -139,15 +138,17 @@ function PreviousTransactionsCard() {
     },
   ];
   return (
-    <Grid className="bg-white md:mx-6 mx-2 md:p-6 my-4 w-[calc(100vw-6)] overflow-hidden relative p-6 shadow-md rounded-md border organic-bg">
+    <Grid className="bg-white md:mx-6 mx-2 md:p-6 my-4 w-[calc(100vw-6)] overflow-hidden relative p-6 shadow-md rounded-md border">
       <GridItem>
-        <div className="">
-          <CustomTabs
-            tabs={tabs}
-            defaultValue="all"
-            tabStyles="bg-transparent w-full rounded-none pb-0"
-          />
-        </div>
+        <Typography size="xl" className="font-bold mb-2">
+          Recent Help Recieved
+        </Typography>
+
+        <CustomTabs
+          tabs={tabs}
+          defaultValue="all"
+          tabStyles="bg-transparent w-full rounded-none pb-0"
+        />
       </GridItem>
     </Grid>
   );

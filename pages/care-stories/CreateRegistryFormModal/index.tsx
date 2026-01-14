@@ -25,7 +25,8 @@ const validationSchema = z
     password: z.string().min(8, "Password must be at least 8 characters"),
 
     registryFor: z.enum(["myself", "someoneElse"]),
-    recipientName: z.string().optional(),
+    recipientFirstName: z.string().optional(),
+    recipientLastName: z.string().optional(),
     recipientEmail: z.string().optional(),
 
     isPublic: z.boolean(),
@@ -35,10 +36,18 @@ const validationSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.registryFor === "someoneElse") {
-      if (!data.recipientName || data.recipientName.length < 2) {
+      if (!data.recipientFirstName || data.recipientFirstName.length < 2) {
         ctx.addIssue({
-          path: ["recipientName"],
-          message: "Recipient name is required",
+          path: ["recipientFirstName"],
+          message: "Recipient first name is required",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
+      if (!data.recipientLastName || data.recipientLastName.length < 2) {
+        ctx.addIssue({
+          path: ["recipientLastName"],
+          message: "Recipient last name is required",
           code: z.ZodIssueCode.custom,
         });
       }
@@ -64,7 +73,8 @@ const initialValues: FormData = {
   email: "",
   password: "",
   registryFor: "myself",
-  recipientName: "",
+  recipientFirstName: "",
+  recipientLastName: "",
   recipientEmail: "",
   isPublic: false,
   limitAccessToLinkHolders: true,
@@ -141,7 +151,7 @@ const CreateRegistryFormModal: React.FC<Props> = ({ open, onClose }) => {
                   <span className="mt-2 text-xs">{step.title}</span>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="dotted-line hidden sm:block self-start mt-5" />
+                  <div className="dotted-line hidden sm:block self-start mt-3" />
                 )}
               </React.Fragment>
             ))}

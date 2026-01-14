@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { GridItem } from "@/components/grid";
+import FormButton from "@/components/form/Fields/FormButton";
 
 type Props = {
   currentStep?: number;
@@ -38,7 +39,8 @@ function RegistryFormFooter({ currentStep, handleNext, handleBack }: Props) {
           <ArrowRight className="h-4 w-4 ml-2" />
         </Button>
       )}
-      {currentStep === 3 && <Button type="submit">Create Registry</Button>}
+
+      {currentStep === 3 && <FormButton>Create Registry</FormButton>}
     </GridItem>
   );
 }

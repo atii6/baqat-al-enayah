@@ -32,9 +32,16 @@ function RegistryTypeFormFields() {
       {registryFor === "someoneElse" && (
         <>
           <FormTextField
-            name="recipientName"
-            label="Recipient Name"
-            placeholder="Recipient's full name"
+            name="recipientFirstName"
+            label="Recipient First Name"
+            placeholder="Recipient's first name"
+            className="mb-0"
+          />
+          <FormTextField
+            name="recipientLastName"
+            label="Recipient Last Name"
+            placeholder="Recipient's last name"
+            className="mb-0"
           />
           <FormTextField
             name="recipientEmail"
