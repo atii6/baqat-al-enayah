@@ -15,12 +15,13 @@ export const sendEmail = async (
 ) => {
   try {
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"GiftWell" <${process.env.EMAIL_SENDER}>`,
       to,
       subject,
       html: htmlContent,
     });
   } catch (error) {
+    console.error("Email send error:", error);
     throw new Error("Failed to send email.");
   }
 };

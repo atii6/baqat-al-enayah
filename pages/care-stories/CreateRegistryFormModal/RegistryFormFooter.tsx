@@ -12,7 +12,10 @@ type Props = {
 };
 
 function RegistryFormFooter({ currentStep, handleNext, handleBack }: Props) {
-  const { trigger } = useFormContext();
+  const {
+    trigger,
+    formState: { isValid },
+  } = useFormContext();
 
   return (
     <GridItem className="flex justify-between pt-6">
@@ -29,9 +32,10 @@ function RegistryFormFooter({ currentStep, handleNext, handleBack }: Props) {
         <Button
           type="button"
           onClick={async () => {
-            const isValid = await trigger();
             if (isValid) {
               handleNext();
+            } else {
+              trigger();
             }
           }}
         >

@@ -13,6 +13,11 @@ import RegistryTypeFormFields from "./RegistryTypeFormFields";
 import ReviewFormDetails from "./ReviewFormDetails";
 import RegistryFormFooter from "./RegistryFormFooter";
 import { useCreateCareRegistryModal } from "@/context/CreateRegistryModalContext";
+import useCreateUser from "@/hooks/user/useCreateUser";
+import { REGISTRY_FOR, USER_ROLES } from "@/constants";
+import { getRandomNumber } from "@/utils/getRandomNumbers";
+import { ExtendedUserType } from "@/utilities/types/user";
+import useGetAllRoles from "@/hooks/role/useGetAllRoles";
 
 const validationSchema = z
   .object({
@@ -24,18 +29,18 @@ const validationSchema = z
       .min(1, "Email is required"),
     password: z.string().min(8, "Password must be at least 8 characters"),
 
-    registryFor: z.enum(["myself", "someoneElse"]),
+    registryFor: z.enum(["myself", "someone_else"]),
     recipientFirstName: z.string().optional(),
     recipientLastName: z.string().optional(),
     recipientEmail: z.string().optional(),
 
     isPublic: z.boolean(),
-    limitAccessToLinkHolders: z.boolean(),
-    allowOthersToAddGifts: z.boolean(),
-    emailAlertsForContributions: z.boolean(),
+    limit_account_access: z.boolean(),
+    limit_others_adding_gifts: z.boolean(),
+    enable_contribution_alerts: z.boolean(),
   })
   .superRefine((data, ctx) => {
-    if (data.registryFor === "someoneElse") {
+    if (data.registryFor === REGISTRY_FOR.SOMEONE_ELSE) {
       if (!data.recipientFirstName || data.recipientFirstName.length < 2) {
         ctx.addIssue({
           path: ["recipientFirstName"],
@@ -77,9 +82,9 @@ const initialValues: FormData = {
   recipientLastName: "",
   recipientEmail: "",
   isPublic: false,
-  limitAccessToLinkHolders: true,
-  allowOthersToAddGifts: true,
-  emailAlertsForContributions: true,
+  limit_account_access: true,
+  limit_others_adding_gifts: true,
+  enable_contribution_alerts: true,
 };
 
 interface Props {
@@ -89,6 +94,8 @@ interface Props {
 
 const CreateRegistryFormModal: React.FC<Props> = ({ open, onClose }) => {
   const { initialValues: heroFormValues } = useCreateCareRegistryModal();
+  const { mutateAsync: createNewUser, isPending } = useCreateUser();
+  const { data: allRoles } = useGetAllRoles();
   const [currentStep, setCurrentStep] = React.useState(1);
 
   const steps = [
@@ -105,12 +112,46 @@ const CreateRegistryFormModal: React.FC<Props> = ({ open, onClose }) => {
     setCurrentStep((s) => Math.min(3, s + 1));
   };
 
-  const handleSubmit = (data: FormData) => {
-    console.log("handleSubmit:", data);
+  const handleSubmit = async (values: FormData) => {
+    console.log("handleSubmit:", values);
+
+    const { registryFor } = values;
+    const roleName =
+      registryFor === REGISTRY_FOR.SOMEONE_ELSE
+        ? USER_ROLES.CAREGIVER
+        : USER_ROLES.RECIPIENT;
+    const matchedRole = allRoles?.find((r) => r.name === roleName);
+
+    const randomNumber = getRandomNumber();
+    const emailName =
+      registryFor === REGISTRY_FOR.SOMEONE_ELSE
+        ? values.recipientEmail?.split("@")[0]
+        : values.email.split("@")[0];
+    const registry_public_url = `${emailName}${randomNumber}`;
+
+    const newUser = {
+      role_id: matchedRole?.id || 0,
+      first_name: values.first_name,
+      last_name: values.last_name,
+      creating_for: values.registryFor,
+      email: values.email,
+      registry_public_url,
+      password: values.password,
+      recipient_email: values.recipientEmail,
+      recipient_first_name: values.recipientFirstName,
+      recipient_last_name: values.recipientLastName,
+      limit_account_access: values.limit_account_access,
+      enable_contribution_alerts: values.enable_contribution_alerts,
+      limit_others_adding_gifts: values.limit_others_adding_gifts,
+      is_deleted: false,
+      is_verified: false,
+    };
+    console.log("handleSubmit:newuser", newUser);
+
+    await createNewUser({ newUser });
     onClose(false);
     setCurrentStep(1);
   };
-
   const handleClose = () => {
     setCurrentStep(1);
     onClose(false);

@@ -5,6 +5,7 @@ import FormTextField from "@/components/form/Fields/FormTextField";
 import FormSwitchButton from "@/components/form/Fields/FormSwitchButton";
 import Typography from "@/components/ui/typography";
 import { useFormContext } from "react-hook-form";
+import { REGISTRY_FOR } from "@/constants";
 
 function RegistryTypeFormFields() {
   const { watch } = useFormContext();
@@ -17,19 +18,19 @@ function RegistryTypeFormFields() {
         labelStyles="text-white"
         options={[
           {
-            value: "myself",
+            value: REGISTRY_FOR.MY_SELF,
             label: "Myself",
             icon: User,
           },
           {
-            value: "someoneElse",
+            value: REGISTRY_FOR.SOMEONE_ELSE,
             label: "Someone Else",
             icon: Users,
           },
         ]}
       />
 
-      {registryFor === "someoneElse" && (
+      {registryFor === REGISTRY_FOR.SOMEONE_ELSE && (
         <>
           <FormTextField
             name="recipientFirstName"
@@ -58,17 +59,17 @@ function RegistryTypeFormFields() {
           className="mb-2"
         />
         <FormSwitchButton
-          name="limitAccessToLinkHolders"
+          name="limit_account_access"
           label="Limit my GiftWell access to link holders only"
           className="mb-2"
         />
         <FormSwitchButton
-          name="allowOthersToAddGifts"
+          name="limit_others_adding_gifts"
           label="Allow others to add gifts or services"
           className="mb-2"
         />
         <FormSwitchButton
-          name="emailAlertsForContributions"
+          name="enable_contribution_alerts"
           label="Get email alerts for new contributions"
           className="mb-2"
         />

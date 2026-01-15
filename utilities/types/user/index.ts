@@ -23,4 +23,8 @@ export type ExtendedUserType = UserType & {
   recipient_email?: string;
   recipient_first_name?: string;
   recipient_last_name?: string;
+  limit_account_access: boolean;
+  limit_others_adding_gifts: boolean;
+  enable_contribution_alerts: boolean;
+  terms_policy?: boolean;
 };

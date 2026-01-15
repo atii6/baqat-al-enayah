@@ -1,13 +1,36 @@
 import bcrypt from "bcrypt";
 import sequelize from "@config/sequelize";
 import db from "@/models";
-import { sendEmail } from "@/utilities/helpers/emailService";
 import jwt from "jsonwebtoken";
-import { EmailRequestTemplate } from "@/utilities/helpers/emailRequestsTemplate";
+// import { sendEmail } from "@/utilities/helpers/emailService";
+// import { EmailRequestTemplate } from "@/utilities/helpers/emailRequestsTemplate";
+import { sendEmail } from "../../utilities/helpers/emailService";
+import { EmailRequestTemplate } from "../../utilities/helpers/emailRequestsTemplate";
 import { Op } from "sequelize";
 import { USER_ROLES } from "@/constants";
 // import { stripe } from "@/lib/stripe";
 import sanitizeUser from "../../utils/sanitizeUsers";
+
+const getRoleByName = (roles, name) => roles.find((role) => role.name === name);
+
+const sendVerificationEmail = async (email) => {
+  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+    expiresIn: "15m",
+  });
+
+  const verifyUrl = `${process.env.NEXT_PUBLIC_URL}/verify?token=${token}`;
+  console.log("sendVerificationEmail", verifyUrl);
+  await sendEmail(
+    email,
+    "Email Address Verification",
+    EmailRequestTemplate(
+      verifyUrl,
+      "Verify Your Email",
+      "Click the button below to verify your email and activate your account.",
+      "Verify Email"
+    )
+  );
+};
 
 const _hashedPassword = async (password) => {
   const saltRounds = 10;
@@ -79,55 +102,55 @@ const getUserById = async (id) => {
 
 const createUser = async (userData) => {
   const {
-    password,
     email,
+    password,
     role_id,
     first_name,
     last_name,
-    public_url,
-    is_deleted,
-    recipient_name,
+    recipient_first_name,
+    recipient_last_name,
     recipient_email,
+    registry_public_url,
+    is_deleted,
     ...userDetails
   } = userData;
+
   const roles = await db.roles.findAll();
+  const recipientRole = getRoleByName(roles, USER_ROLES.RECIPIENT);
+  const careGiverRole = getRoleByName(roles, USER_ROLES.CAREGIVER);
 
-  const careGiverRole = roles.find(
-    (role) => role.name === USER_ROLES.CAREGIVER
-  );
-
-  const recipientRole = roles.find(
-    (role) => role.name === USER_ROLES.RECIPIENT
-  );
+  const isRecipientSelf = role_id === recipientRole.id;
   const hashedPassword = await _hashedPassword(password);
 
   const transaction = await sequelize.transaction();
 
-  const isUserRecipient = role_id === recipientRole.id;
-
   try {
-    const recipientUser = await db.users.findOne({
-      where: {
-        email: isUserRecipient
-          ? email.toLowerCase()
-          : recipient_email.toLowerCase(),
-      },
+    const recipientEmail = (
+      isRecipientSelf ? email : recipient_email
+    ).toLowerCase();
+
+    const recipientName = isRecipientSelf
+      ? { first_name, last_name }
+      : { first_name: recipient_first_name, last_name: recipient_last_name };
+
+    console.log("recipientName", recipientName);
+
+    const existingRecipient = await db.users.findOne({
+      where: { email: recipientEmail },
     });
 
-    if (!isUserRecipient) {
-      const careGiver = await db.careGiver.findOne({
-        where: {
-          email: email.toLowerCase(),
-        },
-      });
-
-      if (careGiver) {
-        throw new Error("Care Giver's email already registered");
-      }
+    if (existingRecipient) {
+      throw new Error("Recipient's email already registered");
     }
 
-    if (recipientUser) {
-      throw new Error("Recipient's email already registered");
+    if (!isRecipientSelf) {
+      const existingCaregiver = await db.careGiver.findOne({
+        where: { email: email.toLowerCase() },
+      });
+
+      if (existingCaregiver) {
+        throw new Error("Care Giver's email already registered");
+      }
     }
 
     // const account = await stripe.accounts.create({
@@ -141,38 +164,27 @@ const createUser = async (userData) => {
     //   },
     // });
 
-    let userFirstName = first_name;
-    let userLastName = last_name;
-
-    if (!isUserRecipient && recipient_name) {
-      const [fname, ...lnameParts] = recipient_name.trim().split(" ");
-      userFirstName = fname;
-      userLastName = lnameParts.join(" ") || "";
-    }
-
     const newUser = await db.users.create(
       {
-        email: isUserRecipient
-          ? email.toLowerCase()
-          : recipient_email.toLowerCase(),
+        email: recipientEmail,
         password: hashedPassword,
         role_id: recipientRole.id,
-        first_name: userFirstName,
-        last_name: userLastName,
-        public_url,
+        ...recipientName,
+        registry_public_url,
         is_deleted,
-        stripe_account_id: account.id,
+        // stripe_account_id: account.id,
       },
       { transaction }
     );
 
-    if (!isUserRecipient) {
+    if (!isRecipientSelf) {
       await db.careGiver.create(
         {
           user_id: newUser.id,
-          email,
+          email: email.toLowerCase(),
           password: hashedPassword,
-          recipient_name,
+          recipient_first_name,
+          recipient_last_name,
           recipient_email,
           role_id: careGiverRole.id,
         },
@@ -181,10 +193,7 @@ const createUser = async (userData) => {
     }
 
     await db.userDetails.create(
-      {
-        user_id: newUser.id,
-        ...userDetails,
-      },
+      { user_id: newUser.id, ...userDetails },
       { transaction }
     );
 
@@ -192,46 +201,20 @@ const createUser = async (userData) => {
       {
         user_id: newUser.id,
         privacy: "private",
+        title: `${newUser.first_name} ${newUser.last_name}'s Care Registry`,
       },
       { transaction }
     );
 
-    if (newUser) {
-      const generateTokenAndSend = async (targetEmail) => {
-        const token = jwt.sign({ email: targetEmail }, process.env.JWT_SECRET, {
-          expiresIn: "15m",
-        });
+    const emailsToVerify = isRecipientSelf
+      ? [recipientEmail]
+      : [recipientEmail, email.toLowerCase()];
 
-        const verifyUrl = `${process.env.NEXT_PUBLIC_URL}/verify?token=${token}`;
-
-        await sendEmail(
-          targetEmail,
-          "Email Address Verification",
-          EmailRequestTemplate(
-            verifyUrl,
-            "Verify Your Email",
-            "Click the button below to verify your email and activate your account.",
-            "Verify Email"
-          )
-        );
-      };
-
-      if (isUserRecipient) {
-        await generateTokenAndSend(email.toLowerCase());
-      } else {
-        await Promise.all([
-          generateTokenAndSend(email.toLowerCase()),
-          generateTokenAndSend(recipient_email.toLowerCase()),
-        ]);
-      }
-    }
+    await Promise.all(emailsToVerify.map(sendVerificationEmail));
 
     await transaction.commit();
 
-    const user = newUser.get({ plain: true });
-    const safeUser = sanitizeUser(user);
-
-    return safeUser;
+    return sanitizeUser(newUser.get({ plain: true }));
   } catch (error) {
     await transaction.rollback();
     throw error;
@@ -284,7 +267,7 @@ const getUserByEmail = async (email) => {
 
   const userEmail = `${email}`;
   const user = await db.users.findOne({
-    where: { public_url: userEmail },
+    where: { registry_public_url: userEmail },
   });
   if (!user) {
     throw new Error("No user found against this username");

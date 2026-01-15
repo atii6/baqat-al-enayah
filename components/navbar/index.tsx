@@ -3,12 +3,26 @@ import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
+import { useVerifyToken } from "@/hooks/useVerifyToken";
+import { toast } from "sonner";
 
 const Navigation = () => {
   const pathName = usePathname();
   const router = useRouter();
   const isLandingPage = pathName === "/";
   const [scrolled, setScrolled] = React.useState(false);
+  const { error, status, data: verifyTokenData } = useVerifyToken();
+
+  if (status === "success" && router.pathname === "/verify") {
+    const { message } = verifyTokenData || {};
+    toast.success(message);
+    router.replace("/");
+  }
+
+  if (error) {
+    toast.error(error?.message);
+    router.replace("/");
+  }
 
   React.useEffect(() => {
     const handleScroll = () => {

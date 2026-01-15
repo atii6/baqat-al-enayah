@@ -2,6 +2,7 @@ import React from "react";
 import { Check } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { GridItem } from "@/components/grid";
+import { REGISTRY_FOR } from "@/constants";
 
 function ReviewFormDetails() {
   const { watch } = useFormContext();
@@ -26,7 +27,7 @@ function ReviewFormDetails() {
             {watch("registryFor") === "myself" ? "Myself" : "Someone Else"}
           </span>
 
-          {watch("registryFor") === "someoneElse" && (
+          {watch("registryFor") === REGISTRY_FOR.SOMEONE_ELSE && (
             <>
               <span className="text-muted-foreground">Recipient:</span>
               <span className="text-foreground">{watch("recipientName")}</span>
