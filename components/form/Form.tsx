@@ -10,6 +10,7 @@ import type {
 import type { ZodSchema, ZodType } from "zod";
 import { cn } from "@/lib/utils";
 import { Grid } from "../grid";
+import { GridItemProps } from "../grid/GridItem";
 
 type Props<Value extends FieldValues> = {
   onSubmit: SubmitHandler<Value>;
@@ -17,6 +18,7 @@ type Props<Value extends FieldValues> = {
   validationSchema: ZodSchema<Value>;
   initialValues: DefaultValues<Value>;
   className?: string;
+  containerStyles?: GridItemProps["className"];
   isLoading?: boolean;
   resetAfterSubmit?: boolean;
 };
@@ -27,6 +29,7 @@ export default function Form<Values extends FieldValues>({
   children,
   initialValues,
   className = "",
+  containerStyles = "",
   isLoading = false,
   resetAfterSubmit = false,
 }: Props<Values>) {
@@ -69,7 +72,7 @@ export default function Form<Values extends FieldValues>({
         onReset={() => methods.reset(initialValues)}
         className={cn("", className)}
       >
-        <Grid>{children}</Grid>
+        <Grid className={cn("", containerStyles)}>{children}</Grid>
       </form>
     </FormProvider>
   );

@@ -4,8 +4,6 @@ import { EmailRequestTemplate } from "@/utilities/helpers/emailRequestsTemplate"
 import { sendEmail } from "@/utilities/helpers/emailService";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { stripe } from "@/lib/stripe";
-import { USER_ROLES } from "@/constants/constants";
 
 const loginUser = async (credentials) => {
   try {
@@ -118,25 +116,6 @@ const loginUser = async (credentials) => {
       throw new Error(
         "Email not verified. We've sent a new verification email."
       );
-    }
-
-    const recipientRole = await db.roles.findOne({
-      where: { id: user.role_id },
-    });
-    const isRecipient = recipientRole.name === USER_ROLES.RECIPIENT;
-
-    // 🟢 Create Stripe account if recipient and missing one
-    if (!isCareGiverLogin && !user.stripe_account_id && isRecipient) {
-      const account = await stripe.accounts.create({
-        type: "express",
-        email: user.email,
-        capabilities: {
-          transfers: { requested: true },
-          card_payments: { requested: true },
-        },
-      });
-
-      await user.update({ stripe_account_id: account.id });
     }
 
     const registryItems = await db.registryItem.findAll({

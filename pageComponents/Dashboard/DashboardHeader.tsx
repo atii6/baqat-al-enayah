@@ -9,12 +9,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Grid, GridItem } from "@/components/grid";
+import { signOut } from "next-auth/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 
-const DashboardHeader = ({
-  HeaderTitleComponent,
-}: {
+type DashboardHeaderProps = {
   HeaderTitleComponent?: React.ReactNode;
-}) => {
+};
+
+const DashboardHeader = ({ HeaderTitleComponent }: DashboardHeaderProps) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const handleSignout = async () => {
+    queryClient.clear();
+    await signOut({ redirect: false });
+    router.replace("/");
+  };
+
   return (
     <Grid className="min-h-24 px-6">
       <GridItem className="flex items-center order-2 lg:order-1 lg:col-span-6 col-span-12">
@@ -39,7 +51,9 @@ const DashboardHeader = ({
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Sign out</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignout}>
+                Sign out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
