@@ -9,9 +9,15 @@ type Props = {
   currentStep?: number;
   handleNext: () => void;
   handleBack: () => void;
+  disableSubmit?: boolean;
 };
 
-function RegistryFormFooter({ currentStep, handleNext, handleBack }: Props) {
+function RegistryFormFooter({
+  currentStep,
+  handleNext,
+  handleBack,
+  disableSubmit,
+}: Props) {
   const {
     trigger,
     formState: { isValid },
@@ -44,7 +50,9 @@ function RegistryFormFooter({ currentStep, handleNext, handleBack }: Props) {
         </Button>
       )}
 
-      {currentStep === 3 && <FormButton>Create Registry</FormButton>}
+      {currentStep === 3 && (
+        <FormButton disabled={disableSubmit}>Create Registry</FormButton>
+      )}
     </GridItem>
   );
 }

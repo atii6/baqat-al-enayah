@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 interface ContactUsPayload {
   name: string;
   email: string;
-  phone: string;
+  subject: string;
   message: string;
 }
 

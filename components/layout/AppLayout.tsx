@@ -6,9 +6,14 @@ import { Spinner } from "../ui/spinner";
 import { CreateCareRegistryModalProvider } from "@/context/CreateRegistryModalContext";
 import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
+import { useUserStore } from "@/store";
 
 function AppLayout({ Component, pageProps }: AppProps) {
   const { data: session, status } = useSession();
+  const setUser = useUserStore(React.useCallback((state) => state.setUser, []));
+  const resetUser = useUserStore(
+    React.useCallback((state) => state.resetUser, [])
+  );
   const router = useRouter();
 
   const currentRoute = React.useMemo(() => {
@@ -23,17 +28,34 @@ function AppLayout({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
     if (status === "loading") return;
 
-    // User is NOT authenticated but route is protected
-    if (!isAuthenticated && isProtectedRoute) {
-      router.replace(ROUTES.HOME.pathName);
+    // AUTHENTICATED
+    if (isAuthenticated && session?.user) {
+      setUser(session.user);
+
+      // Redirect away from public pages
+      if (!isProtectedRoute) {
+        router.replace(ROUTES.DASHBOARD.pathName);
+      }
+
       return;
     }
 
-    // User IS authenticated but route is public
-    if (isAuthenticated && !isProtectedRoute) {
-      router.replace(ROUTES.DASHBOARD.pathName);
+    // UNAUTHENTICATED
+    resetUser();
+
+    // Block protected routes
+    if (isProtectedRoute) {
+      router.replace(ROUTES.HOME.pathName);
     }
-  }, [status, isAuthenticated, isProtectedRoute, router]);
+  }, [
+    status,
+    isAuthenticated,
+    session?.user,
+    isProtectedRoute,
+    router,
+    setUser,
+    resetUser,
+  ]);
 
   if (!status || status === "loading") {
     return (

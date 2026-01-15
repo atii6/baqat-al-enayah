@@ -2,13 +2,10 @@ import bcrypt from "bcrypt";
 import sequelize from "@config/sequelize";
 import db from "@/models";
 import jwt from "jsonwebtoken";
-// import { sendEmail } from "@/utilities/helpers/emailService";
-// import { EmailRequestTemplate } from "@/utilities/helpers/emailRequestsTemplate";
 import { sendEmail } from "../../utilities/helpers/emailService";
 import { EmailRequestTemplate } from "../../utilities/helpers/emailRequestsTemplate";
 import { Op } from "sequelize";
 import { USER_ROLES } from "@/constants";
-// import { stripe } from "@/lib/stripe";
 import sanitizeUser from "../../utils/sanitizeUsers";
 
 const getRoleByName = (roles, name) => roles.find((role) => role.name === name);
@@ -19,7 +16,6 @@ const sendVerificationEmail = async (email) => {
   });
 
   const verifyUrl = `${process.env.NEXT_PUBLIC_URL}/verify?token=${token}`;
-  console.log("sendVerificationEmail", verifyUrl);
   await sendEmail(
     email,
     "Email Address Verification",
@@ -132,8 +128,6 @@ const createUser = async (userData) => {
     const recipientName = isRecipientSelf
       ? { first_name, last_name }
       : { first_name: recipient_first_name, last_name: recipient_last_name };
-
-    console.log("recipientName", recipientName);
 
     const existingRecipient = await db.users.findOne({
       where: { email: recipientEmail },

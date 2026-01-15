@@ -5,7 +5,7 @@ async function postHandler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
-  const { name, email, phone, message } = req.body;
+  const { name, email, subject, message } = req.body;
 
   const RECEIVER_EMAIL = process.env.EMAIL_SENDER;
 
@@ -17,7 +17,7 @@ async function postHandler(req, res) {
         <div>
           <p><strong>Name:</strong> ${name}</p>
           <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
+          <p><strong>Subject:</strong> ${subject}</p>
           <p><strong>Message:</strong></p>
           <p>${message}</p>
         </div>

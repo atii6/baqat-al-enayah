@@ -15,7 +15,6 @@ export const config = {
 };
 
 async function POST(req, res) {
-  console.log("Received Stripe webhook");
   try {
     const buf = await buffer(req);
     const body = buf.toString("utf8");

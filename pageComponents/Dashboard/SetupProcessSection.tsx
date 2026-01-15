@@ -1,9 +1,12 @@
+import React from "react";
 import { CircleCheck } from "lucide-react";
 import { Grid, GridItem } from "@/components/grid";
 import RegistrySetupCards from "./RegistrySetupCards";
 import { REGISTRY_STEPS } from "@/constants/registrySteps";
 import Typography from "@/components/ui/typography";
 import { useRouter } from "next/router";
+import { useUserStore } from "@/store";
+import useGetUserByID from "@/hooks/user/useGetUserByID";
 
 export type CardData = {
   id: number;
@@ -20,6 +23,16 @@ const titleToUrlMap: Record<string, string> = {
 
 const SetupProcessSection = () => {
   const router = useRouter();
+  const storedUser = useUserStore(React.useCallback((state) => state, []));
+
+  const userID = storedUser.id!;
+  const { data: user } = useGetUserByID(userID);
+
+  const isRegistrySetupCompleted =
+    user?.isRegistrySetupCompleted &&
+    user?.isPersonalDetailsCompleted &&
+    user.isRegistryPublished;
+
   const handleCardClick = (cardData?: CardData) => {
     const title = cardData?.title;
     const urlPath =
@@ -38,32 +51,36 @@ const SetupProcessSection = () => {
   };
 
   const updatedRegistrySteps = REGISTRY_STEPS.map((step) => {
-    if (step.title === "Personal Story / Photo Page /Recipient Details") {
+    if (step.title === "Personal Details") {
       return {
         ...step,
-        isCompleted: true,
+        isCompleted: user?.isPersonalDetailsCompleted,
       };
     }
     if (step.title === "Build Your Care Registry") {
       return {
         ...step,
-        isCompleted: true,
+        isCompleted: user?.isRegistrySetupCompleted,
       };
     }
     if (step.title === "Preview & Publish") {
       return {
         ...step,
-        isCompleted: true,
+        isCompleted: user?.isRegistryPublished,
       };
     }
     if (step.title === "Share & Receive Meaningful Support!") {
       return {
         ...step,
-        isCompleted: true,
+        isCompleted: isRegistrySetupCompleted,
       };
     }
     return step;
   });
+
+  const stepsCount = updatedRegistrySteps.filter(
+    (step) => step.isCompleted
+  ).length;
 
   return (
     <section className="mt-10 mb-5 mx-6 p-6 shadow-md rounded-md border">
@@ -75,7 +92,7 @@ const SetupProcessSection = () => {
           <div className="flex items-center gap-2">
             <CircleCheck className="fill-secondary text-white" />
             <Typography variant="caption" className="text-muted-foreground">
-              {`You’ve finished 0 of ${REGISTRY_STEPS.length}`}
+              {`You’ve finished ${stepsCount} of ${REGISTRY_STEPS.length}`}
             </Typography>
           </div>
         </GridItem>

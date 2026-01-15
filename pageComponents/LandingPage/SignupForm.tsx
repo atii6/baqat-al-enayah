@@ -27,7 +27,6 @@ function SignupForm({ setIsSignInForm }: Props) {
   type ValidationSchemaType = z.infer<typeof validationSchema>;
 
   const handleSubmit = (value: ValidationSchemaType) => {
-    console.log(value);
     openModal(value);
   };
   return (

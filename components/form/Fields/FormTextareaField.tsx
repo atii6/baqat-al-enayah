@@ -58,7 +58,7 @@ const FormTextareaField: React.FC<FormTextareaFieldProps> = ({
                 rows={rows}
               />
               {!disableGutter && (
-                <div className="h-2">
+                <div className="h-2 my-2">
                   <ErrorText message={fieldState.error?.message || ""} />
                 </div>
               )}

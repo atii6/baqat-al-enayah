@@ -7,6 +7,8 @@ import Form from "@/components/form/Form";
 import Typography from "@/components/ui/typography";
 import { Send } from "lucide-react";
 import z from "zod";
+import useContactUs from "@/hooks/contact-us/useContactUs";
+import { toast } from "sonner";
 
 const selectOptions = [
   { label: "General Inquiry", value: "general" },
@@ -18,6 +20,8 @@ const selectOptions = [
 ];
 
 function ContactForm() {
+  const { mutateAsync: sendEmail } = useContactUs();
+
   const initialValues = {
     name: "",
     email: "",
@@ -35,8 +39,19 @@ function ContactForm() {
     message: z.string().min(1, "Message is required"),
   });
 
-  const handleSubmit = (value: z.infer<typeof validationSchema>) => {
-    console.log(value);
+  const handleSubmit = async (values: z.infer<typeof validationSchema>) => {
+    try {
+      const result = await sendEmail(values);
+
+      if (!result.success) {
+        throw new Error(result.error || "Something went wrong");
+      }
+
+      toast.success("Message sent successfully!");
+      return true;
+    } catch (error) {
+      toast.error(`Failed: ${error}`);
+    }
   };
 
   return (
@@ -58,6 +73,7 @@ function ContactForm() {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
+        resetAfterSubmit
       >
         <FormTextField
           name="name"

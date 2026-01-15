@@ -16,7 +16,6 @@ import { useCreateCareRegistryModal } from "@/context/CreateRegistryModalContext
 import useCreateUser from "@/hooks/user/useCreateUser";
 import { REGISTRY_FOR, USER_ROLES } from "@/constants";
 import { getRandomNumber } from "@/utils/getRandomNumbers";
-import { ExtendedUserType } from "@/utilities/types/user";
 import useGetAllRoles from "@/hooks/role/useGetAllRoles";
 
 const validationSchema = z
@@ -113,8 +112,6 @@ const CreateRegistryFormModal: React.FC<Props> = ({ open, onClose }) => {
   };
 
   const handleSubmit = async (values: FormData) => {
-    console.log("handleSubmit:", values);
-
     const { registryFor } = values;
     const roleName =
       registryFor === REGISTRY_FOR.SOMEONE_ELSE
@@ -146,7 +143,6 @@ const CreateRegistryFormModal: React.FC<Props> = ({ open, onClose }) => {
       is_deleted: false,
       is_verified: false,
     };
-    console.log("handleSubmit:newuser", newUser);
 
     await createNewUser({ newUser });
     onClose(false);
@@ -212,6 +208,7 @@ const CreateRegistryFormModal: React.FC<Props> = ({ open, onClose }) => {
                 currentStep={currentStep}
                 handleNext={handleNext}
                 handleBack={handleBack}
+                disableSubmit={isPending}
               />
             </>
           </Form>

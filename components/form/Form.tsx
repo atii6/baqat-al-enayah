@@ -53,11 +53,17 @@ export default function Form<Values extends FieldValues>({
   }, [initialValues]);
 
   const _handleSubmit = async (val: Values) => {
-    await onSubmit(val);
-    if (resetAfterSubmit) {
-      methods.reset();
+    try {
+      const result = await onSubmit(val);
+
+      if (resetAfterSubmit && result === true) {
+        methods.reset(initialValues);
+      }
+    } catch (error) {
+      console.error("Submit failed:", error);
     }
   };
+
   return (
     <FormProvider
       {...methods}

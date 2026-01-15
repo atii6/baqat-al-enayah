@@ -128,8 +128,6 @@ const handlePaymentIntentSucceeded = async (paymentIntent, stripeAccount) => {
         )
       );
     }
-
-    console.log(`PaymentIntent ${paymentIntent.id} processed successfully.`);
   } catch (err) {
     await transaction.rollback();
     console.error("Error handling payment_intent.succeeded:", err);
