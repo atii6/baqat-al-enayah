@@ -51,7 +51,7 @@ export default function ConfirmationDialog({
     <Dialog open={open} onOpenChange={closeDialog}>
       {dialogTrigger && <DialogTrigger asChild>{dialogTrigger}</DialogTrigger>}
 
-      <DialogContent className="w-11/12 mx-auto md:max-w-[600px] lg:min-w-[900px]">
+      <DialogContent className="w-11/12 mx-auto md:max-w-150 lg:min-w-225">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

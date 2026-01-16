@@ -33,7 +33,7 @@ function PostAuthScreenLayout({ children }: PostAuthScreenLayoutProps) {
   const headerTitleComponent = (
     <div className="flex gap-3 items-center">
       <Avatar>
-        <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-linear-to-br from-primary to-secondary text-white flex items-center justify-center">
           {currentStepId === 1 ? <PersonStandingIcon /> : <BookIcon />}
         </div>
       </Avatar>

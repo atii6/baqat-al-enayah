@@ -27,7 +27,7 @@ const TextField: React.FC<TextFieldProps> = ({
       {label && (
         <Label
           htmlFor={name}
-          className="text-sm font-medium"
+          className="text-sm font-medium mb-1"
           style={{ color: "var(--text-primary)" }}
         >
           {label}

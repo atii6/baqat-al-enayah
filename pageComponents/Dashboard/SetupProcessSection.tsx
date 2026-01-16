@@ -55,24 +55,29 @@ const SetupProcessSection = () => {
       return {
         ...step,
         isCompleted: user?.isPersonalDetailsCompleted,
+        isDisabled: false,
       };
     }
     if (step.title === "Build Your Care Registry") {
       return {
         ...step,
         isCompleted: user?.isRegistrySetupCompleted,
+        isDisabled: !user?.isPersonalDetailsCompleted,
       };
     }
     if (step.title === "Preview & Publish") {
       return {
         ...step,
         isCompleted: user?.isRegistryPublished,
+        isDisabled:
+          !user?.isRegistrySetupCompleted || !user?.isPersonalDetailsCompleted,
       };
     }
     if (step.title === "Share & Receive Meaningful Support!") {
       return {
         ...step,
         isCompleted: isRegistrySetupCompleted,
+        isDisabled: !isRegistrySetupCompleted,
       };
     }
     return step;
