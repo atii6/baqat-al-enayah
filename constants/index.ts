@@ -10,3 +10,16 @@ export const REGISTRY_FOR = {
   MY_SELF: "myself",
   SOMEONE_ELSE: "someone_else",
 } as const;
+
+export const BLOG_STATUS = {
+  DRAFT: "draft",
+  PUBLISHED: "published",
+} as const;
+
+export const BUCKET_FOLDER_NAME = {
+  STORY: "story",
+  REGISTRY: "registry",
+  BLOG: "blog",
+  ARTICLE: "article",
+  PRODUCTS: "products",
+} as const;

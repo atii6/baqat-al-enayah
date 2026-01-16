@@ -75,7 +75,7 @@ function FormFooter({
         <div>
           <FormButton
             variant={submitButtonVariant}
-            disabled={isSubmitButtonDisabled}
+            disabled={isSubmissionDisabled}
           >
             {submitButtonText}
           </FormButton>

@@ -10,44 +10,52 @@ type EllipsisTypographyProps = {
   children?: React.ReactNode;
   title?: string;
   className?: string;
+  dangerouslySetInnerHTML?: { __html: string };
 };
 
 const EllipsisTypography: React.FC<EllipsisTypographyProps> = ({
   children,
   title,
   className = "",
+  dangerouslySetInnerHTML,
 }) => {
   const textRef = React.useRef<HTMLDivElement>(null);
-  const [isTruncated, setIsTruncated] = React.useState(false);
+  const [isOverflowing, setIsOverflowing] = React.useState(false);
 
   React.useEffect(() => {
     const el = textRef.current;
-    if (!el) return;
-
-    const isOverflowing =
-      el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth;
-
-    setIsTruncated(isOverflowing);
-  }, [children]);
-
-  const content = (
-    <div
-      ref={textRef}
-      className={`overflow-hidden text-ellipsis wrap-break-word ${className}`}
-    >
-      {children}
-    </div>
-  );
-
-  if (!isTruncated || !title) {
-    return content;
-  }
+    if (el) {
+      setIsOverflowing(
+        el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth
+      );
+    }
+  }, [children, dangerouslySetInnerHTML]);
 
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>{content}</TooltipTrigger>
-        <TooltipContent className="max-w-sm text-xs">{title}</TooltipContent>
+        <TooltipTrigger asChild>
+          <div
+            ref={textRef}
+            dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+            className={`overflow-hidden text-ellipsis wrap-break-word ${className}`}
+          >
+            {children}
+          </div>
+        </TooltipTrigger>
+        {isOverflowing && (
+          <TooltipContent className="max-w-sm text-xs">
+            {title ||
+              (dangerouslySetInnerHTML ? (
+                <div
+                  className=" max-w-none line-clamp-6"
+                  dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+                />
+              ) : (
+                children
+              ))}
+          </TooltipContent>
+        )}
       </Tooltip>
     </TooltipProvider>
   );

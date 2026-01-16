@@ -183,7 +183,7 @@ function SupportAndResourcesPage() {
             <SearchField
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
-              inputPlaceholder="Search articles, authors, topics..."
+              placeholder="Search articles, authors, topics..."
             />
           </div>
         </div>

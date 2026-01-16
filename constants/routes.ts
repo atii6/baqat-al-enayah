@@ -1,6 +1,6 @@
 import type { RouteKeys, RoutesConfig } from "@/utilities/types/routeTypes";
 import { ALL_USERS } from ".";
-import { LayoutPanelLeft } from "lucide-react";
+import { BookText, LayoutPanelLeft } from "lucide-react";
 
 export const ROUTES: Record<RouteKeys, RoutesConfig> = {
   HOME: {
@@ -56,34 +56,14 @@ export const ROUTES: Record<RouteKeys, RoutesConfig> = {
     isProtected: true,
     icon: undefined,
   },
-  FRIENDS: {
+  BLOGS: {
     allowedRoles: ALL_USERS,
-    pathName: "/friends",
+    pathName: "/blog",
     showInSideBar: true,
-    title: "Friends",
+    title: "Blogs",
     parentRoute: "",
     hasChildRoutes: false,
     isProtected: true,
-    icon: LayoutPanelLeft,
-  },
-  EXPLORE: {
-    allowedRoles: ALL_USERS,
-    pathName: "/explore",
-    showInSideBar: true,
-    title: "Explore",
-    parentRoute: "",
-    hasChildRoutes: false,
-    isProtected: true,
-    icon: LayoutPanelLeft,
-  },
-  MESSAGES: {
-    allowedRoles: ALL_USERS,
-    pathName: "/messages",
-    showInSideBar: true,
-    title: "Messages",
-    parentRoute: "",
-    hasChildRoutes: false,
-    isProtected: true,
-    icon: LayoutPanelLeft,
+    icon: BookText,
   },
 };

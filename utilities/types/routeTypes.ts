@@ -7,9 +7,7 @@ export type RouteKeys =
   | "ABOUT"
   | "PUBLIC_REGISTRY"
   | "DASHBOARD"
-  | "FRIENDS"
-  | "EXPLORE"
-  | "MESSAGES"
+  | "BLOGS"
   | "REGISTRY_SETUP_STEPS";
 
 export type RoutesConfig = {

@@ -67,7 +67,7 @@ function CareStoriesPage() {
             <SearchField
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
-              inputPlaceholder="Search by family name, story, or support type..."
+              placeholder="Search by family name, story, or support type..."
             />
           </div>
         </div>

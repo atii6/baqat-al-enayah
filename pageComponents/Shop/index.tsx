@@ -128,7 +128,7 @@ const Shop = () => {
               <SearchField
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                inputPlaceholder="Search products..."
+                placeholder="Search products..."
               />
             </GridItem>
 
