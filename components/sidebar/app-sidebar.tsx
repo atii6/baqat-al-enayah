@@ -54,7 +54,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" className="h-[calc(100vh-14)]" {...props}>
-      <SidebarContent className="p-2 bg-linear-to-b from-primary to-secondary">
+      <SidebarContent className="p-2 bg-linear-to-b from-white to-primary">
         <SideNavMain items={navMain} />
       </SidebarContent>
       <SidebarRail />

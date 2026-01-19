@@ -12,6 +12,7 @@ const GiftWell = (sequelize) => {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     title: { type: DataTypes.STRING, allowNull: true },
     description: { type: DataTypes.TEXT },
+    organizer_name: { type: DataTypes.STRING, allowNull: true },
     user_id: { type: DataTypes.INTEGER, allowNull: false },
     privacy: {
       type: DataTypes.ENUM("public", "private"),

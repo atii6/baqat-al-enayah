@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LeafCluster } from "../LandingPage/LeafDecoration";
-import SelectField from "@/components/shared/fields/select-field";
+import SelectField, {
+  type SelectOption,
+} from "@/components/shared/fields/select-field";
 import ProductCard from "./ProductCard";
 import EmptyProductList from "./EmptyProductList";
 import Typography from "@/components/ui/typography";
@@ -18,26 +20,28 @@ import { Grid, GridItem } from "@/components/grid";
 import SearchField from "@/components/shared/SearchField";
 import useGetAllProducts from "@/hooks/product/useGetAllProducts";
 import useGetAllProductTypes from "@/hooks/product-types/useGetAllProductTypes";
-import type { ProductTypesType } from "@/utilities/types/product-type";
 
-const priceRanges = [
-  "All Prices",
-  "Under $25",
-  "$25 - $50",
-  "$50 - $100",
-  "Over $100",
+type PriceRangeValue = "all" | "under-25" | "25-50" | "50-100" | "over-100";
+
+const priceRanges: SelectOption<PriceRangeValue>[] = [
+  { label: "All Prices", value: "all" },
+  { label: "Under $25", value: "under-25" },
+  { label: "$25 - $50", value: "25-50" },
+  { label: "$50 - $100", value: "50-100" },
+  { label: "Over $100", value: "over-100" },
 ];
 
-const filterByPrice = (price: number, range: string): boolean => {
+const filterByPrice = (price: number, range: PriceRangeValue): boolean => {
   switch (range) {
-    case "Under $25":
+    case "under-25":
       return price < 25;
-    case "$25 - $50":
+    case "25-50":
       return price >= 25 && price <= 50;
-    case "$50 - $100":
+    case "50-100":
       return price >= 50 && price <= 100;
-    case "Over $100":
+    case "over-100":
       return price > 100;
+    case "all":
     default:
       return true;
   }
@@ -47,53 +51,43 @@ const Shop = () => {
   const { data: allProducts } = useGetAllProducts();
   const { data: productCategory } = useGetAllProductTypes();
 
-  const categories = React.useMemo(() => {
-    if (!productCategory) return ["All"];
-
-    return ["All", ...productCategory.map((category) => category.name)];
-  }, [productCategory]);
-
-  const categoryMap: Record<number, ProductTypesType> =
-    productCategory?.reduce<Record<number, ProductTypesType>>(
-      (acc, category) => {
-        acc[category.id] = category;
-        return acc;
-      },
-      {}
-    ) ?? {};
-
-  const products = allProducts?.map((product) => {
-    return {
-      id: product.id,
-      name: product.name,
-      price: product.price || 0,
-      image: product.image_url || "",
-      category: product.category
-        ? categoryMap?.[product.category]?.name
-        : "Uncategorized",
-    };
-  });
+  const categories: SelectOption<CategorySelectValue>[] = React.useMemo(
+    () => [
+      { label: "All", value: "all" },
+      ...(productCategory?.map((category) => ({
+        label: category.name,
+        value: category.id,
+      })) ?? []),
+    ],
+    [productCategory]
+  );
 
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [selectedCategory, setSelectedCategory] = React.useState("All");
-  const [selectedPrice, setSelectedPrice] = React.useState("All Prices");
+  type CategorySelectValue = number | "all";
+
+  const [selectedCategory, setSelectedCategory] =
+    React.useState<CategorySelectValue>("all");
+
+  const [selectedPrice, setSelectedPrice] =
+    React.useState<PriceRangeValue>("all");
+
   const [showFilters, setShowFilters] = React.useState(false);
 
   const filteredProducts = React.useMemo(
     () =>
-      products?.filter((product) => {
+      allProducts?.filter((product) => {
         const matchesSearch = product.name
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
 
         const matchesCategory =
-          selectedCategory === "All" || product.category === selectedCategory;
+          selectedCategory === "all" || product.category === selectedCategory;
 
         const matchesPrice = filterByPrice(product.price || 0, selectedPrice);
 
         return matchesSearch && matchesCategory && matchesPrice;
       }),
-    [products, searchQuery, selectedCategory, selectedPrice]
+    [allProducts, searchQuery, selectedCategory, selectedPrice]
   );
 
   return (
@@ -216,13 +210,18 @@ const Shop = () => {
         </div>
 
         {/* Products Grid */}
-        <div
-          className={`grid gap-6 mb-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"`}
-        >
+        <Grid className="gap-6">
           {filteredProducts?.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
+            <GridItem
+              className={
+                "col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"
+              }
+              key={product.id}
+            >
+              <ProductCard product={product} index={index} />
+            </GridItem>
           ))}
-        </div>
+        </Grid>
 
         {/* Empty State */}
         {filteredProducts?.length === 0 && <EmptyProductList />}

@@ -1,4 +1,4 @@
-import { EMAIL_REGEX, EMAIL_REGEX_GENERIC } from "../constants/regex";
+import { EMAIL_REGEX, EMAIL_REGEX_GENERIC } from "../../constants/regex";
 
 const isValidEmail = (email: string): boolean => {
   if (typeof email !== "string") {

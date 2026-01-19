@@ -80,8 +80,6 @@ function PreviewAndPublish() {
   const router = useRouter();
   const user = useUserStore(React.useCallback((state) => state, []));
   const { data: personalInfo } = useGetUserByID(user.id || 0);
-  const [registryTitle, setRegistryTitle] = React.useState<string>("");
-  const [organizerName, setOrganizerName] = React.useState<string>("");
 
   const { mutateAsync: updateGiftWell } = useUpdateGiftWell();
   const { data: userDetails } = useGetUserDetailsByID(user.id!);
@@ -90,6 +88,33 @@ function PreviewAndPublish() {
     user.giftWellID!
   );
   const { data: allDonations } = useGetDonationByUserID(user.id || 0);
+  const [registryTitle, setRegistryTitle] = React.useState<string>("");
+  const [organizerName, setOrganizerName] = React.useState<string>("");
+
+  React.useEffect(() => {
+    if (giftWell) {
+      setRegistryTitle(giftWell.title || "");
+      setOrganizerName(giftWell.organizer_name || "");
+    }
+  }, [giftWell]);
+
+  const handleRegistryTitleChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      setRegistryTitle(e.target.value);
+    },
+    []
+  );
+
+  const handleOrganizerNameChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      setOrganizerName(e.target.value);
+    },
+    []
+  );
 
   const handleBackClick = () => {
     router.push("/build-care-registry");
@@ -124,13 +149,21 @@ function PreviewAndPublish() {
 
   const isRegistryPublic = giftWell?.privacy === "public";
 
-  const isSaveButtonDisabled =
-    !userAddress ||
-    !recipientName ||
-    !userDetails?.journey ||
-    isRegistryPublic ||
-    !registryTitle ||
-    !organizerName;
+  const isSaveButtonDisabled = React.useMemo(
+    () =>
+      !userAddress ||
+      !recipientName ||
+      !userDetails?.journey ||
+      isRegistryPublic ||
+      !registryTitle,
+    [
+      userAddress,
+      recipientName,
+      userDetails?.journey,
+      isRegistryPublic,
+      registryTitle,
+    ]
+  );
 
   const handleCopyUrl = async () => {
     try {
@@ -232,6 +265,10 @@ function PreviewAndPublish() {
             </div>
           </GridItem>
 
+          <GridItem className="my-3">
+            <Separator className="w-full" />
+          </GridItem>
+
           <GridItem className="">
             <Typography size="md" className=" text-[#262626]">
               Registry Details
@@ -243,15 +280,19 @@ function PreviewAndPublish() {
             label="Registry Title"
             placeholder="Write registry name that will appear to other people"
             value={registryTitle}
-            onChange={(e) => setRegistryTitle(e.target.value)}
+            onChange={handleRegistryTitleChange}
           />
           <TextField
             name="organizer_name"
             label="Organizer Name"
             placeholder="Who is organizing this registry?"
             value={organizerName}
-            onChange={(e) => setOrganizerName(e.target.value)}
+            onChange={handleOrganizerNameChange}
           />
+
+          <GridItem className="my-3">
+            <Separator className="w-full" />
+          </GridItem>
 
           <GridItem>
             <DataTable
@@ -260,6 +301,10 @@ function PreviewAndPublish() {
               isSortingEnabled={false}
               isPaginationEnabled={false}
             />
+          </GridItem>
+
+          <GridItem className="my-3">
+            <Separator className="w-full" />
           </GridItem>
 
           {allDonations && allDonations?.length > 0 && (
@@ -287,10 +332,9 @@ function PreviewAndPublish() {
 
       <BuildRegistryFooter
         handleBackClick={handleBackClick}
-        // handleNextClick={
-        //   isRegistryPublic ? handleNextClick : handlePublishRegistry
-        // }
-        handleNextClick={handleNextClick}
+        handleNextClick={
+          isRegistryPublic ? handleNextClick : handlePublishRegistry
+        }
         onSaveClick={handlePublishRegistry}
         saveButtonText={
           !isRegistryPublic ? "Publish Your Registry" : "Published"
@@ -301,4 +345,4 @@ function PreviewAndPublish() {
   );
 }
 
-export default PreviewAndPublish;
+export default React.memo(PreviewAndPublish);

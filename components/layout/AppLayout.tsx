@@ -7,6 +7,7 @@ import { CreateCareRegistryModalProvider } from "@/context/CreateRegistryModalCo
 import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
 import { useUserStore } from "@/store";
+import LoaderLogo from "../shared/loader-logo";
 
 function AppLayout({ Component, pageProps }: AppProps) {
   const { data: session, status } = useSession();
@@ -58,12 +59,7 @@ function AppLayout({ Component, pageProps }: AppProps) {
   ]);
 
   if (!status || status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center gap-3">
-        <Spinner />
-        Loading...
-      </div>
-    );
+    return <LoaderLogo />;
   }
 
   if (!isAuthenticated && !isProtectedRoute) {

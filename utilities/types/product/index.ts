@@ -2,7 +2,7 @@ export type ProductType = {
   id: number;
   name: string;
   description?: string | null;
-  price?: number | null;
+  price?: number;
   affiliate_link?: string | null;
   is_affiliated?: boolean;
   category?: number | null;

@@ -88,7 +88,7 @@ const SetupProcessSection = () => {
   ).length;
 
   return (
-    <section className="mt-10 mb-5 mx-6 p-6 shadow-md rounded-md border">
+    <section className="mt-10 mb-5 mx-6 p-6 shadow-md rounded-md border bg-white">
       <Grid className="gap-4">
         <GridItem className="py-0 space-y-2">
           <Typography size="xl" className="font-bold text-muted-foreground">

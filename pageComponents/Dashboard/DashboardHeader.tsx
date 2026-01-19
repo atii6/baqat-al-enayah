@@ -1,4 +1,4 @@
-import { Bell, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +35,7 @@ const DashboardHeader = ({ HeaderTitleComponent }: DashboardHeaderProps) => {
       <GridItem className="flex items-center justify-end order-2 lg:order-1 lg:col-span-6 col-span-12">
         <div className="flex items-center space-x-4 gap-2">
           {/* Notifications */}
-          <Bell className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 cursor-pointer" />
+          {/* <Bell className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 cursor-pointer" /> */}
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -46,10 +46,10 @@ function RegistrySetupCards({
     <Card
       onClick={handleCardClick}
       className={cn(
-        "border-0 gap-0 min-h-28 w-full p-4 transition-all duration-300",
+        "gap-0 min-h-28 w-full p-4 transition-all duration-300 shadow-sm border",
         isDisabled
           ? "bg-gray-100 cursor-not-allowed opacity-60"
-          : "bg-white cursor-pointer shadow-sm hover:bg-gray-100 group-hover:scale-[1.03] group-hover:shadow-sm"
+          : "bg-white cursor-pointer hover:bg-gray-50 group-hover:scale-[1.03] group-hover:shadow-md"
       )}
     >
       <CardContent className="p-0 w-full">

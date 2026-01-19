@@ -1,4 +1,4 @@
-import { IMAGE_REGEX, VIDEO_REGEX } from "../constants/regex";
+import { IMAGE_REGEX, VIDEO_REGEX } from "@/constants/regex";
 
 export const isValidUrl = (url: string): boolean => {
   try {

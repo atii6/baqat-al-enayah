@@ -39,13 +39,13 @@ export function SideNavMain({ items }: NavMainProps) {
   };
   return (
     <SidebarMenu className="px-3 space-y-2 rounded-md h-full">
-      <div className="flex items-center justify-center mb-4 py-6 border-b">
-        <div className=" w-28 h-12">
+      <div className="flex items-center justify-center mb-4 border-b">
+        <div className="w-72 h-36">
           <Image
-            src={"/GWS-logo-dark.svg"}
+            src={"/baqat_al_enayah_logo.png"}
             alt="logo"
-            width={200}
-            height={200}
+            width={400}
+            height={400}
             className="w-full h-full object-contain"
           />
         </div>
@@ -80,7 +80,7 @@ export function SideNavMain({ items }: NavMainProps) {
                     tooltip={item.title}
                     isActive={item.isActive}
                     onClick={() => handleClick(item.url)}
-                    className="py-6 cursor-pointer text-white"
+                    className="py-6 cursor-pointer"
                   >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
@@ -106,7 +106,9 @@ export function SideNavMain({ items }: NavMainProps) {
                             >
                               <div className="flex pl-6">
                                 <span>
-                                  {subItem.icon && <subItem.icon size={16} />}{" "}
+                                  {subItem.icon && (
+                                    <subItem.icon size={16} />
+                                  )}{" "}
                                 </span>
                                 <span>{subItem.title}</span>
                               </div>
