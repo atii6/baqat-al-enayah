@@ -26,7 +26,7 @@ const EllipsisTypography: React.FC<EllipsisTypographyProps> = ({
     const el = textRef.current;
     if (el) {
       setIsOverflowing(
-        el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth
+        el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth,
       );
     }
   }, [children, dangerouslySetInnerHTML]);

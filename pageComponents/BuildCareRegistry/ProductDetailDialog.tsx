@@ -104,20 +104,20 @@ function ProductDetailDialog({
           <GridItem className="relative flex items-center col-span-12 md:col-span-5">
             <div className="w-full space-y-5">
               <div className="flex flex-col gap-1 w-full">
-                <Typography size="md" className="text-[#050708]">
+                <EllipsisTypography className="text-[#050708] line-clamp-2">
                   {product?.name || ""}
-                </Typography>
+                </EllipsisTypography>
                 <span className="flex gap-1 items-center w-full cursor-pointer">
                   <CheckMarkIcon variant="filled" width={13} height={14} />
                   <EllipsisTypography
                     title={product?.affiliate_link || ""}
-                    className="text-[#597FA6] font-bold text-[10px] w-11/12"
+                    className="text-[#597FA6] font-bold text-[10px] w-11/12 line-clamp-2"
                   >
                     {product?.affiliate_link || ""}
                   </EllipsisTypography>
                 </span>
                 <Typography size="md" className="text-[#828383]">
-                  {`$${product?.price || ""}`}
+                  {`$${product?.price || "100"}`}
                 </Typography>
               </div>
               <div className="space-y-1">
