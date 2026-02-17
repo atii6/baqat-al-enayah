@@ -101,7 +101,7 @@ export async function fetchWrapper<TData, TBody = unknown>({
     },
     body: body && JSON.stringify(body), // body can be undefined, that's ok
   };
-  const _url = `${baseUrl}/api/${url}`;
+  const _url = `/api/${url}`;
 
   const response = await fetch(_url, options);
   const data = await handleResponse<TData>(response, customClientErrorHandler);
