@@ -7,6 +7,8 @@ import Typography from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { useUserStore } from "@/store";
 import useGetUserByID from "@/hooks/user/useGetUserByID";
+import { useDialog } from "@/hooks/useDialog";
+import ShareSupportDialog from "../ShareSupportDialog";
 
 export type CardData = {
   id: number;
@@ -24,6 +26,7 @@ const titleToUrlMap: Record<string, string> = {
 const SetupProcessSection = () => {
   const router = useRouter();
   const storedUser = useUserStore(React.useCallback((state) => state, []));
+  const { open: isDialogOpen, closeDialog, openDialog } = useDialog();
 
   const userID = storedUser.id!;
   const { data: user } = useGetUserByID(userID);
@@ -43,7 +46,7 @@ const SetupProcessSection = () => {
         .replace(/(^-|-$)/g, "");
 
     if (urlPath === "share-and-receive") {
-      // openShareSupportDialog();
+      openDialog();
       return;
     }
 
@@ -84,7 +87,7 @@ const SetupProcessSection = () => {
   });
 
   const stepsCount = updatedRegistrySteps.filter(
-    (step) => step.isCompleted
+    (step) => step.isCompleted,
   ).length;
 
   return (
@@ -109,6 +112,8 @@ const SetupProcessSection = () => {
           />
         ))}
       </Grid>
+
+      <ShareSupportDialog open={isDialogOpen} closeDialog={closeDialog} />
     </section>
   );
 };
