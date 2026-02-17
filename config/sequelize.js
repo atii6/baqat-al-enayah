@@ -2,6 +2,15 @@ import { Sequelize } from "sequelize";
 
 const env = process.env.NODE_ENV || "development";
 
+console.log("ENV CHECK:", {
+  NODE_ENV: process.env.NODE_ENV,
+  PGDATABASE: process.env.PGDATABASE,
+  PGUSER: process.env.PGUSER,
+  PGPASSWORD: process.env.PGPASSWORD ? "SET" : "NOT SET",
+  PGHOST: process.env.PGHOST,
+  PGPORT: process.env.PGPORT,
+});
+
 const config = {
   development: {
     database: process.env.DB_NAME || "gift_well_soon",
