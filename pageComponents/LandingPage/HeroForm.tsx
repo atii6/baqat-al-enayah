@@ -1,6 +1,6 @@
 import React from "react";
-import SignupForm from "./SignUpForm";
 import SigninForm from "./SigninForm";
+import SignupForm from "./SignupForm";
 
 function HeroForm() {
   const [isSignInForm, setIsSignInForm] = React.useState<boolean>(false);

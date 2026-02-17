@@ -21,14 +21,14 @@ async function postHandler(req, res) {
           <p><strong>Message:</strong></p>
           <p>${message}</p>
         </div>
-      `
+      `,
     );
 
     return res.status(200).json({ success: true });
   } catch (error) {
     return res
       .status(500)
-      .json({ success: false, error: "Email sending failed" });
+      .json({ success: false, error: `Email sending failed:${error}` });
   }
 }
 

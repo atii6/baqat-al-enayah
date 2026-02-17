@@ -17,6 +17,7 @@ type FormTextFieldProps = {
   previewImage?: string;
   className?: string;
   inputFieldStyles?: string;
+  labelStyles?: string;
   onFileChange?: (file: File) => void;
 } & Omit<InputProps, "name" | "type" | "label">;
 
@@ -32,6 +33,7 @@ const FormTextField: React.FC<FormTextFieldProps> = ({
   className,
   inputFieldStyles,
   onFileChange,
+  labelStyles,
   ...rest
 }) => {
   const {
@@ -45,7 +47,10 @@ const FormTextField: React.FC<FormTextFieldProps> = ({
   return (
     <GridItem className={className} size={size}>
       {label && (
-        <label htmlFor={name} className="text-sm font-medium text-[#262626]">
+        <label
+          htmlFor={name}
+          className={cn("text-sm font-medium text-[#262626]", labelStyles)}
+        >
           {label}
           {required && <span className="text-red-500 ml-0.1">*</span>}
         </label>

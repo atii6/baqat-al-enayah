@@ -1,5 +1,5 @@
 import methodHandler from "@/utils/requestHandler";
-import { buffer } from "micro";
+// import { buffer } from "micro";
 import { stripe } from "@/lib/stripe";
 import {
   handleAccountUpdated,
@@ -16,17 +16,17 @@ export const config = {
 
 async function POST(req, res) {
   try {
-    const buf = await buffer(req);
-    const body = buf.toString("utf8");
+    // const buf = await buffer(req);
+    // const body = buf.toString("utf8");
 
     const signature = req.headers["stripe-signature"];
 
     let event;
     try {
       event = stripe.webhooks.constructEvent(
-        body,
+        {}, // will be replaced by body
         signature,
-        process.env.STRIPE_WEBHOOK_SECRET
+        process.env.STRIPE_WEBHOOK_SECRET,
       );
     } catch (err) {
       return res.status(400).send(`Webhook Error: ${err.message}`);

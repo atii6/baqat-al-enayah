@@ -4,6 +4,7 @@ import * as React from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
+  Row,
   type SortingState,
   type VisibilityState,
   flexRender,
@@ -71,30 +72,24 @@ type DataTableProps<T> = {
   emptyDataText?: string;
 };
 
-interface SortableRowProps {
-  row: any;
+interface SortableRowProps<T> {
+  row: Row<T>;
   children: React.ReactNode;
   isDragEnabled: boolean;
-  handleRowClick?: (rowData: any) => void;
+  handleRowClick?: (rowData: T) => void;
 }
 
-function SortableRow({
+function SortableRow<T>({
   row,
   children,
   isDragEnabled,
   handleRowClick,
-}: SortableRowProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: row.id,
-    disabled: !isDragEnabled,
-  });
+}: SortableRowProps<T>) {
+  const { attributes, setNodeRef, transform, transition, isDragging } =
+    useSortable({
+      id: row.id,
+      disabled: !isDragEnabled,
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -111,7 +106,7 @@ function SortableRow({
         "h-12 text-gray-700 border-b",
         handleRowClick && "cursor-pointer",
         isDragging && "bg-gray-50 shadow-lg z-10",
-        isDragEnabled && "hover:bg-gray-50/50"
+        isDragEnabled && "hover:bg-gray-50/50",
       )}
       onClick={() => !isDragging && handleRowClick?.(row.original)}
       {...(isDragEnabled ? attributes : {})}
@@ -127,7 +122,6 @@ function DataTable<T>({
   tableHeading = "",
   tableHeaderClassname,
   tableWidth = "w-full",
-  enteriesPerPage = 5,
   isSortingEnabled = false,
   isFiltersEnabled = false,
   isSearchbarEnabled = false,
@@ -138,12 +132,12 @@ function DataTable<T>({
   isDragEnabled = false,
   emptyDataText = "Currently No Data Available",
   onReorder,
-  getRowId = (row: any) => row.id || Math.random().toString(),
+  getRowId = (row: T) => (row as { id?: string }).id ?? crypto.randomUUID(),
 }: DataTableProps<T>) {
   const [data, setData] = React.useState(initialData);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -161,7 +155,7 @@ function DataTable<T>({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const table = useReactTable({
@@ -222,7 +216,7 @@ function DataTable<T>({
           <TableHeader
             className={cn(
               "bg-gray-100 text-[#A3A3A3] border-b-0",
-              tableHeaderClassname
+              tableHeaderClassname,
             )}
           >
             {table.getHeaderGroups().map((headerGroup) => (
@@ -235,8 +229,8 @@ function DataTable<T>({
                         index === 0
                           ? "rounded-tl-sm rounded-bl-sm"
                           : index === headerGroup.headers.length - 1
-                          ? "rounded-tr-sm rounded-br-sm"
-                          : ""
+                            ? "rounded-tr-sm rounded-br-sm"
+                            : ""
                       }`}
                     >
                       {header.isPlaceholder ? null : header.column.getCanSort() ? (
@@ -244,7 +238,7 @@ function DataTable<T>({
                           variant="ghost"
                           onClick={() =>
                             header.column.toggleSorting(
-                              header.column.getIsSorted() === "asc"
+                              header.column.getIsSorted() === "asc",
                             )
                           }
                           disabled={!header.column.getCanSort()}
@@ -252,14 +246,14 @@ function DataTable<T>({
                         >
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                           <ArrowUpDown size={16} className="ml-2" />
                         </Button>
                       ) : (
                         flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )
                       )}
                     </TableHead>
@@ -286,7 +280,7 @@ function DataTable<T>({
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </TableCell>
                       ))}
@@ -319,7 +313,7 @@ function DataTable<T>({
                         <TableCell key={cell.id}>
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </TableCell>
                       ))}

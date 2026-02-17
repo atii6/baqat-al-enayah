@@ -33,7 +33,6 @@ const FormStepper: React.FC<FormStepperProps> = ({
   currentStep,
   setCurrentStep,
   className,
-  subtitle,
   showScrollArea = true,
   renderScrollbar = false,
   showStepCounter = false,
@@ -63,7 +62,7 @@ const FormStepper: React.FC<FormStepperProps> = ({
       stepID <=
       Math.max(
         currentStep,
-        steps.find((s) => s.stepID === currentStep)?.PrevStepID || 0
+        steps.find((s) => s.stepID === currentStep)?.PrevStepID || 0,
       ) +
         1
     ) {
@@ -87,7 +86,7 @@ const FormStepper: React.FC<FormStepperProps> = ({
                   "px-6 py-4 text-sm font-medium transition-colors relative whitespace-nowrap",
                   step.stepID === currentStep
                     ? "text-[#385C80] border-b-2 border-[#9EB7D1]"
-                    : "text-[#6B7280] hover:text-[#111827]"
+                    : "text-[#6B7280] hover:text-[#111827]",
                 )}
                 disabled={step.stepID > currentStep + 1}
               >
@@ -102,7 +101,7 @@ const FormStepper: React.FC<FormStepperProps> = ({
       )}
       {showStepCounter && (
         <div className="flex flex-col items-center">
-          <span className="font-[700] text-[22px] ">
+          <span className="font-bold text-[22px] ">
             {steps[currentStep - 1].stepTitle}
           </span>
           <span className="text-center text-[14px] my-2">{step?.subtitle}</span>

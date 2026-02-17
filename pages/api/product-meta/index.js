@@ -19,8 +19,8 @@ export default async function handler(req, res) {
       const match = html.match(
         new RegExp(
           `<meta[^>]+property=["']${property}["'][^>]+content=["']([^"']+)["']`,
-          "i"
-        )
+          "i",
+        ),
       );
       return match ? match[1] : null;
     };
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     const description =
       getMeta("og:description") ||
       (html.match(
-        /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i
+        /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i,
       )?.[1] ??
         null);
 
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
 
     if (!image) {
       const landingImgMatch = html.match(
-        /<img[^>]+id=["']landingImage["'][^>]+>/i
+        /<img[^>]+id=["']landingImage["'][^>]+>/i,
       );
       if (landingImgMatch) {
         const imgTag = landingImgMatch[0];
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
         if (!image) {
           const dynamicImageMatch = imgTag.match(
-            /data-a-dynamic-image=["']([^"']+)["']/
+            /data-a-dynamic-image=["']([^"']+)["']/,
           );
           if (dynamicImageMatch) {
             try {
@@ -80,7 +80,7 @@ export default async function handler(req, res) {
               const urls = Object.keys(dynamicJson);
               if (urls.length > 0) image = urls[0];
             } catch (err) {
-              console.warn("Failed to parse data-a-dynamic-image");
+              console.warn(`Failed to parse data-a-dynamic-image:${err}`);
             }
           }
         }
@@ -95,7 +95,7 @@ export default async function handler(req, res) {
     if (!price) {
       const ldJsonMatches = [
         ...html.matchAll(
-          /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi
+          /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi,
         ),
       ];
       for (const match of ldJsonMatches) {
@@ -138,6 +138,6 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ title, image, description, price });
   } catch (error) {
-    return res.status(500).json({ error: "Failed to fetch metadata" });
+    return res.status(500).json({ error: `Failed to fetch metadata:${error}` });
   }
 }

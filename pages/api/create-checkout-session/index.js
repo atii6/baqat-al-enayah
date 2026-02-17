@@ -1,5 +1,4 @@
 import { stripe } from "@/lib/stripe";
-import { getPaymentDetailByDonationId } from "@/server/controllers/paymentDetailController";
 import methodHandler from "@/utils/requestHandler";
 import db from "@/models";
 
@@ -54,7 +53,7 @@ async function handler(req, res) {
           user_id: user.id.toString(),
         },
       },
-      { stripeAccount: user.stripe_account_id }
+      { stripeAccount: user.stripe_account_id },
     );
 
     return res.status(200).json({

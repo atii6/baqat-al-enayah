@@ -34,7 +34,6 @@ export default function ConfirmationDialog({
   onConfirm,
   onCancel,
   open,
-  openDialog,
   closeDialog,
 }: ConfirmationDialogProps) {
   const handleConfirm = () => {

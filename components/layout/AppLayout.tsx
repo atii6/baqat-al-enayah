@@ -2,7 +2,6 @@ import React from "react";
 import dynamic from "next/dynamic";
 import type { AppProps } from "next/app";
 import { useSession } from "next-auth/react";
-import { Spinner } from "../ui/spinner";
 import { CreateCareRegistryModalProvider } from "@/context/CreateRegistryModalContext";
 import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
@@ -13,13 +12,13 @@ function AppLayout({ Component, pageProps }: AppProps) {
   const { data: session, status } = useSession();
   const setUser = useUserStore(React.useCallback((state) => state.setUser, []));
   const resetUser = useUserStore(
-    React.useCallback((state) => state.resetUser, [])
+    React.useCallback((state) => state.resetUser, []),
   );
   const router = useRouter();
 
   const currentRoute = React.useMemo(() => {
     return Object.values(ROUTES).find(
-      (route) => route.pathName === router.pathname
+      (route) => route.pathName === router.pathname,
     );
   }, [router.pathname]);
 

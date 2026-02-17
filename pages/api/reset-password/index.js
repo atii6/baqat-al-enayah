@@ -24,14 +24,13 @@ const handler = async (req, res) => {
     // 2. If not found, try care_giver
     if (!account) {
       account = await db.careGiver.findOne({ where: { email } });
-      isCareGiver = true;
     }
 
     if (!account) {
       return res.status(404).json({ message: "Account not found." });
     }
 
-    const { password, ...accountData } = account.toJSON();
+    const { password: _, ...accountData } = account.toJSON();
 
     return res.status(200).json(accountData);
   } catch (err) {
