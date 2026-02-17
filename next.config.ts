@@ -4,10 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   images: {
-    domains: [
-      "images.unsplash.com",
-      "m.media-amazon.com",
-      "bakatalenayah.blob.core.windows.net",
+    remotePatterns: [
+      { hostname: "images.unsplash.com" },
+      { hostname: "m.media-amazon.com" },
+      { hostname: "bakatalenayah.blob.core.windows.net" },
     ],
   },
   webpack: (config) => {
