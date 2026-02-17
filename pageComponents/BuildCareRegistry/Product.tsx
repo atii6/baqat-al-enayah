@@ -77,11 +77,11 @@ function Product({ registryItems, setCurrentStep }: ProductProps) {
         product_id: items.product_id,
         status: items.status,
       };
-    }
+    },
   );
 
   const handleBackClick = () => {
-    router.push("/dashboard/personal-details");
+    setCurrentStep((prev) => prev - 1);
   };
 
   const handleNextClick = () => {
@@ -103,7 +103,7 @@ function Product({ registryItems, setCurrentStep }: ProductProps) {
   const handleWishProduct = (
     registriItem: RegistryItemType,
     registryProduct: ProductType,
-    ProductType: "Wish" | "Suggestion"
+    ProductType: "Wish" | "Suggestion",
   ) => {
     setProductType(ProductType);
     if (registriItem && registryProduct) {
@@ -116,7 +116,7 @@ function Product({ registryItems, setCurrentStep }: ProductProps) {
 
   const handleSuggestionClick = (
     product: ProductType,
-    ProductType: "Wish" | "Suggestion"
+    ProductType: "Wish" | "Suggestion",
   ) => {
     setProductType(ProductType);
     setSelectedProduct(product);
@@ -125,7 +125,7 @@ function Product({ registryItems, setCurrentStep }: ProductProps) {
   const nextOrderIndex =
     Math.max(
       0,
-      ...(userRegistryProducts?.map((item) => item.order_index ?? 0) ?? [])
+      ...(userRegistryProducts?.map((item) => item.order_index ?? 0) ?? []),
     ) + 1;
 
   const handleAddToList = async () => {
@@ -155,7 +155,7 @@ function Product({ registryItems, setCurrentStep }: ProductProps) {
   const handleRemoveFromList = async () => {
     if (selectedProduct) {
       const productToRemove = userRegistryProducts?.find(
-        (item) => item.product_id === selectedProduct.id
+        (item) => item.product_id === selectedProduct.id,
       );
       await deleteRegistryItem(productToRemove?.id || 0);
     }
@@ -172,7 +172,7 @@ function Product({ registryItems, setCurrentStep }: ProductProps) {
             ...prev,
             ...filteredItems?.registry_product,
             id: filteredItems?.registry_product?.id || prev?.id || 0,
-          }) as ProductType
+          }) as ProductType,
       );
     }
 

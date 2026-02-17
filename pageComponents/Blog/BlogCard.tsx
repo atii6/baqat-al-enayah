@@ -26,7 +26,7 @@ import ConfirmationDialog from "@/components/shared/confirmation-dialog";
 
 interface BlogCardProps {
   blog: BlogsType;
-  categories: BlogCategoryType[];
+  categories?: BlogCategoryType[];
   isEditable?: boolean;
   onClick?: (blog: BlogsType) => void;
   onDelete?: (blogID: number) => void;
@@ -86,7 +86,7 @@ export default function BlogCard({
       toast.success(
         `${postType} ${
           status === BLOG_STATUS.DRAFT ? "drafted" : BLOG_STATUS.PUBLISHED
-        } successfully.`
+        } successfully.`,
       );
     } catch (error) {
       toast.error(`Failed: ${error}`);
@@ -95,7 +95,7 @@ export default function BlogCard({
 
   const isPublicStoryPage = React.useMemo(() => {
     const route = Object.values(ROUTES).find(
-      (r) => r.pathName === router.pathname
+      (r) => r.pathName === router.pathname,
     );
 
     return route ? !route.isProtected : true;
@@ -123,11 +123,11 @@ export default function BlogCard({
                 isEditable ? "min-h-36" : "min-h-24"
               }`}
             >
-              <div className="flex items-center justify-between w-full">
-                <Badge className={getStatusColor(blog.status)}>
-                  {blog.status}
-                </Badge>
-                {isEditable && (
+              {isEditable && (
+                <div className="flex items-center justify-between w-full">
+                  <Badge className={getStatusColor(blog.status)}>
+                    {blog.status}
+                  </Badge>
                   <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -167,8 +167,8 @@ export default function BlogCard({
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                )}
-              </div>
+                </div>
+              )}
 
               <div>
                 <EllipsisTypography className="font-semibold text-lg leading-tight line-clamp-2 mb-2 capitalize">
@@ -208,7 +208,7 @@ export default function BlogCard({
                   {getFormattedDate(
                     blog.status === BLOG_STATUS.PUBLISHED
                       ? blog.updated_at || ""
-                      : blog.created_at || ""
+                      : blog.created_at || "",
                   )}
                 </Badge>
               </div>

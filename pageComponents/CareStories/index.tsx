@@ -1,46 +1,57 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { DUMMY_STORIES } from "../LandingPage/FamilyCardCarousel";
 import PagesHeroSection from "@/components/shared/PagesHeroSection";
 import FamilyStoryCard from "../LandingPage/HeroSection/FamilyStoryCard";
 import Typography from "@/components/ui/typography";
 import SearchField from "@/components/shared/SearchField";
 import { useCreateCareRegistryModal } from "@/context/CreateRegistryModalContext";
+import useGetAllGiftWells from "@/hooks/gift-well/useGetAllGiftwells";
 
 export const STORY_CATEGORIES = [
-  "All",
-  "Medical Emergency",
-  "Childcare",
-  "Cancer Treatment",
-  "Living Expenses",
-  "Nutrition",
-  "Caregiver Support",
-  "Mental Health",
+  { label: "All", value: "all" },
+  { label: "Medical Emergency", value: "medical_emergency" },
+  { label: "Child Care", value: "child_care" },
+  { label: "Cancer Treatment", value: "cancer_treatment" },
+  { label: "Living Expenses", value: "living_expenses" },
+  { label: "Nutrition", value: "nutrition" },
+  { label: "Caregiver Support", value: "caregiver_support" },
+  { label: "Mental Health", value: "mental_health" },
 ];
+
+export const SUPPORT_CATEGORY_MAP = Object.fromEntries(
+  STORY_CATEGORIES.map((cat) => [cat.value, cat.label]),
+);
 
 function CareStoriesPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("All");
   const { openModal } = useCreateCareRegistryModal();
+  const { data: allGiftwell } = useGetAllGiftWells();
+
+  const Giftwell = React.useMemo(() => {
+    return allGiftwell?.map((giftwell) => {
+      return {
+        ...giftwell,
+        support_category: SUPPORT_CATEGORY_MAP[giftwell.support_category || ""],
+      };
+    });
+  }, [allGiftwell]);
 
   const filteredStories = React.useMemo(() => {
-    return DUMMY_STORIES.filter((story) => {
+    return Giftwell?.filter((story) => {
       const matchesSearch =
-        story.registry_title
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        story.registry_description
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
+        story.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        story.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         story.organizer_name
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        story.story.toLowerCase().includes(searchQuery.toLowerCase());
+        story.description?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory =
-        selectedCategory === "All" || story.category === selectedCategory;
+        selectedCategory === "All" ||
+        story.support_category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [Giftwell, searchQuery, selectedCategory]);
 
   // const toggleLike = (storyId: number) => {
   //   setLikedStories((prev) =>
@@ -80,22 +91,22 @@ function CareStoriesPage() {
           <div className="flex flex-wrap gap-3">
             {STORY_CATEGORIES.map((category) => (
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                key={category.value}
+                onClick={() => setSelectedCategory(category.label)}
                 className={`px-5 py-2 rounded-full font-medium transition-all duration-300 transform hover:scale-105 ${
-                  selectedCategory === category
+                  selectedCategory === category.label
                     ? "bg-linear-to-r from-primary to-secondary text-white shadow-lg scale-105"
                     : "bg-white text-slate-700 border-2 border-slate-200 hover:border-primary/50"
                 }`}
               >
-                {category}
+                {category.label}
               </button>
             ))}
           </div>
         </div>
 
         {/* Stories Grid */}
-        {filteredStories.length > 0 ? (
+        {filteredStories && filteredStories.length > 0 ? (
           <div className="grid md:grid-cols-2 gap-8">
             {filteredStories.map((story, index) => (
               <div

@@ -5,22 +5,17 @@ import Typography from "@/components/ui/typography";
 import EllipsisTypography from "@/components/shared/EllipsisTypography";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import type { StoryType } from "@/utilities/types/storyTypes";
+import type { GiftWellType } from "@/utilities/types/giftWell";
 
 type FamilyStoryCardProps = {
-  story: StoryType;
+  story: GiftWellType;
 };
 
 function FamilyStoryCard({ story }: FamilyStoryCardProps) {
   const router = useRouter();
 
-  const {
-    registry_title,
-    registry_description,
-    organizer_name,
-    family_photo,
-    category,
-  } = story;
+  const { title, description, organizer_name, family_photo, support_category } =
+    story;
 
   return (
     <Card className="bg-card p-6 rounded-md border-0 shadow-md min-h-80">
@@ -28,7 +23,7 @@ function FamilyStoryCard({ story }: FamilyStoryCardProps) {
       <div className="flex items-start gap-6 relative">
         <div className="w-32 h-24 bg-linear-to-br from-accent to-leaf-light rounded-2xl flex items-center shadow-md justify-center overflow-hidden">
           <Image
-            src={family_photo}
+            src={family_photo || ""}
             alt="Family photo"
             width={100}
             height={100}
@@ -38,23 +33,23 @@ function FamilyStoryCard({ story }: FamilyStoryCardProps) {
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <Typography variant="h3" className="font-semibold text-foreground">
-              {registry_title}
+              {title || ""}
             </Typography>
           </div>
           <EllipsisTypography
-            title={registry_description}
+            title={description || ""}
             className="line-clamp-1 text-sm text-muted-foreground"
           >
-            {registry_description}
+            {description}
           </EllipsisTypography>
 
           <Typography size="sm" className="text-muted-foreground">
-            {organizer_name}
+            {organizer_name || ""}
           </Typography>
         </div>
-        {category && (
+        {support_category && (
           <span className="bg-linear-to-r from-primary to-secondary text-primary-foreground text-xs font-medium px-2 py-1 rounded-full">
-            {category}
+            {support_category}
           </span>
         )}
       </div>
@@ -68,17 +63,17 @@ function FamilyStoryCard({ story }: FamilyStoryCardProps) {
                 Our Story
               </Typography>
               <EllipsisTypography
-                title={story.story}
+                title={story.description || ""}
                 className="text-sm text-muted-foreground line-clamp-2"
               >
-                {story.story}
+                {story.description}
               </EllipsisTypography>
             </div>
 
             <Button
               variant="link"
               className="p-0 cursor-pointer"
-              onClick={() => router.push(`/care-stories/${story.id}`)}
+              onClick={() => router.push(`/care-stories/${story.user_id}`)}
             >
               Read More
             </Button>

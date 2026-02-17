@@ -30,8 +30,6 @@ export default function useUpdateGiftWell() {
       queryClient.invalidateQueries({
         queryKey: ["users", variables.giftwell.user_id],
       });
-
-      toast.success("Registry Published Successfully");
     },
   });
 }

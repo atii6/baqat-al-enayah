@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import useGetUserDetailsByID from "@/hooks/user-details/useGetUserDetailsByID";
 import useGetRoleById from "@/hooks/role/useGetRoleByID";
 import { USER_ROLES } from "@/constants";
-import { Separator } from "@/components/ui/separator";
 import { Grid, GridItem } from "@/components/grid";
 import DonationDetailsCard from "./DonationDetailsCard";
 import { Spinner } from "@/components/ui/spinner";
@@ -103,6 +102,7 @@ function GiftsAndMonetary({ setCurrentStep }: GiftsAndMonetaryProps) {
       await createNewDonation({ newDonation: donationItem });
       toast.success("Donation added successfully.");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to update donation details.");
     }
   };
@@ -110,7 +110,7 @@ function GiftsAndMonetary({ setCurrentStep }: GiftsAndMonetaryProps) {
     setCurrentStep((prev) => prev - 1);
   };
   const handleNextClick = () => {
-    router.push("/dashboard/preview-and-publish");
+    router.push("/preview-and-publish");
   };
 
   const handleCreateDonation = () => {
@@ -201,20 +201,17 @@ function GiftsAndMonetary({ setCurrentStep }: GiftsAndMonetaryProps) {
           label="Reason for the donation"
           placeholder='Example: ("To pay more hours for our current babysitter")'
         />
-        <GridItem>
-          <Separator className="my-1" />
-        </GridItem>
 
         <FormFooter
           submitButtonText="Save Donation"
           IsResetButtonRequired={false}
           onBackButtonClick={handleBackClick}
           renderBackButton={true}
-          // onNextClick={handleNextClick}
+          onNextClick={handleNextClick}
           isSubmitButtonDisabled={
             isPending || isUpdatePending || isUserNotAllowed
           }
-          // disableNextButton={isPending || isUpdatePending}
+          disableNextButton={isPending || isUpdatePending}
         />
       </Form>
     </>

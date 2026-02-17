@@ -1,43 +1,54 @@
-import fs from "fs";
 import { IncomingForm } from "formidable";
-import { uploadFile } from "@/lib/s3";
-import { authOptions } from "../auth/[...nextauth]";
-import { getServerSession } from "next-auth";
+import fs from "fs";
+import { uploadFileToAzure } from "../../../lib/azureBlob";
 import methodHandler from "@/utils/requestHandler";
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: false, // must be false for file uploads
   },
 };
 
-async function handler(req, res) {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session || !session.user?.email) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
+const handler = async (req, res) => {
   const form = new IncomingForm();
 
   form.parse(req, async (err, fields, files) => {
-    if (err) return res.status(500).json({ error: "Error parsing file" });
+    console.log("handler==>", err, fields, files);
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    console.log("handler==>1");
 
-    const file = files.file[0];
-    const buffer = fs.readFileSync(file.filepath);
-    const userId = fields.userId?.[0];
-    const type = fields.type?.[0];
+    const uploadedFile = Array.isArray(files.file) ? files.file[0] : files.file;
 
-    if (!userId || !type) {
-      return res.status(400).json({ error: "Missing userId or type" });
+    if (!uploadedFile) {
+      return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const key = `public/${userId}/${type}/${file.originalFilename}`;
+    console.log("handler==>2", uploadedFile);
 
-    const s3Url = await uploadFile(buffer, key, file.mimetype);
+    if (!uploadedFile) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    console.log("handler==>3", uploadedFile.filepath);
 
-    res.status(200).json({ url: s3Url });
+    // Read file buffer
+    const buffer = fs.readFileSync(uploadedFile.filepath); // filepath comes from formidable
+
+    try {
+      const response = await uploadFileToAzure(
+        buffer,
+        uploadedFile.originalFilename,
+        uploadedFile.mimetype || "application/octet-stream",
+        "uploads",
+      );
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
   });
-}
+};
 
 export default methodHandler({
   POST: handler,

@@ -1,7 +1,7 @@
 import React from "react";
 import FormResetButton from "./Fields/FormResetButton";
 import FormButton from "./Fields/FormButton";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { useFormContext } from "react-hook-form";
 import { GridItem } from "../grid";
@@ -25,6 +25,8 @@ type FormFooterProps = {
     | "secondary"
     | "link"
     | "outline";
+  onNextClick?: () => void;
+  disableNextButton?: boolean;
 };
 
 function FormFooter({
@@ -39,6 +41,8 @@ function FormFooter({
   backButtonType = "button",
   backButtonText = "Back",
   disableBackButton = false,
+  onNextClick,
+  disableNextButton = false,
 }: FormFooterProps) {
   const { formState } = useFormContext();
   const isSubmissionDisabled =
@@ -52,7 +56,7 @@ function FormFooter({
     <GridItem size={size}>
       <div className="flex items-center justify-between w-full gap-6 md:gap-12">
         {(IsResetButtonRequired || renderBackButton) && (
-          <div>
+          <div className="border-t border-[#9EB7D1] pt-4">
             {IsResetButtonRequired && (
               <FormResetButton>
                 <ArrowLeft className="mr-2" size={20} />
@@ -72,13 +76,21 @@ function FormFooter({
             )}
           </div>
         )}
-        <div>
+        <div className="flex items-center justify-between w-full border-t border-[#9EB7D1] pt-4">
           <FormButton
             variant={submitButtonVariant}
             disabled={isSubmissionDisabled}
           >
             {submitButtonText}
           </FormButton>
+          <Button
+            type="button"
+            onClick={onNextClick}
+            disabled={disableNextButton}
+          >
+            Next
+            <ArrowRight size={20} />
+          </Button>
         </div>
       </div>
     </GridItem>

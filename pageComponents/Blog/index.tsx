@@ -41,12 +41,12 @@ function BlogPage() {
 
   const publishedBlogs = React.useMemo(
     () => allBlogs?.filter((blog) => blog.status === BLOG_STATUS.PUBLISHED),
-    [allBlogs]
+    [allBlogs],
   );
 
   const draftBlogs = React.useMemo(
     () => allBlogs?.filter((blog) => blog.status === BLOG_STATUS.DRAFT),
-    [allBlogs]
+    [allBlogs],
   );
 
   const selectedCategoryID = React.useMemo(() => {
@@ -67,7 +67,7 @@ function BlogPage() {
         !selectedCategoryID || blog.category.includes(selectedCategoryID);
 
       const matchesSearch =
-        blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        blog.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         blog.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
       return matchesStatus && matchesCategory && matchesSearch;

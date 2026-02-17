@@ -8,10 +8,10 @@ const getAllGiftWells = async () => {
   });
 };
 
-export default function useGetAllGiftWells(enabled?: boolean) {
+export default function useGetAllGiftWells() {
   return useQuery({
     queryKey: ["giftWells"],
     queryFn: getAllGiftWells,
-    enabled: !!enabled,
+    // enabled: !!enabled,
   });
 }

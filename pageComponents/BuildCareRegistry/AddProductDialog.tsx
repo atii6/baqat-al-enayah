@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import useCreateRegistryItem from "@/hooks/registry-item/useCreateRegistryItem";
-import { useS3Upload } from "@/hooks/s3-bucket/useS3Upload";
+import { useAzureUpload } from "@/hooks/blob-storage/useBlobFileUpload";
 import useAddNewProduct from "@/hooks/product/useAddProduct";
 import useUpdateRegistryItems from "@/hooks/registry-item/useUpdateRegistryItems";
 import type {
@@ -23,7 +23,6 @@ import type {
 import { useUserStore } from "@/store";
 import type { ProductType } from "@/utilities/types/product";
 import { toast } from "sonner";
-import { BUCKET_FOLDER_NAME } from "@/constants";
 
 type AddProductProps = {
   open: boolean;
@@ -49,7 +48,7 @@ function AddProductDialog({
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const { mutateAsync: createRegistryItem } = useCreateRegistryItem();
   const { mutateAsync: updateRegistryItem } = useUpdateRegistryItems();
-  const { uploadFile } = useS3Upload();
+  const { uploadFile } = useAzureUpload();
   const user = useUserStore(React.useCallback((state) => state, []));
 
   React.useEffect(() => {
@@ -90,11 +89,10 @@ function AddProductDialog({
 
     if (values.imageUploadedUrl instanceof File) {
       try {
-        imageUrl = await uploadFile({
+        const uploadedFile = await uploadFile({
           file: values.imageUploadedUrl,
-          userId: user.id || 0,
-          type: BUCKET_FOLDER_NAME.REGISTRY,
         });
+        imageUrl = uploadedFile.url;
       } catch (e) {
         toast.error(`Error uploading file:${e}`);
         return;
@@ -158,13 +156,13 @@ function AddProductDialog({
             },
             quantity: 1,
             order_index: registryItemOrderIndex! + index,
-          })
+          }),
         );
 
         await Promise.all(
           createPayloads.map((registryItemData) =>
-            createRegistryItem({ registryItemData })
-          )
+            createRegistryItem({ registryItemData }),
+          ),
         );
         toast.success("Registry item added successfully");
       }
@@ -182,13 +180,13 @@ function AddProductDialog({
           },
           quantity: 1,
           order_index: registryItemOrderIndex! + index,
-        })
+        }),
       );
 
       await Promise.all(
         createPayloads.map((registryItemData) =>
-          createRegistryItem({ registryItemData })
-        )
+          createRegistryItem({ registryItemData }),
+        ),
       );
       toast.success("Registry item added successfully");
     }
@@ -248,13 +246,13 @@ function AddProductDialog({
             placeholder="Example: ('Large size, blue color')"
             // readonly={isFormFieldDisabled}
           />
-          {/* <FormTextField
+          <FormTextField
             className="col-span-12 md:col-span-6"
             type="file"
             accept="image/*"
             name="imageUploadedUrl"
             label=""
-            // previewImage={previewUrl || selectedProduct?.image_url || ""}
+            previewImage={previewUrl || selectedProduct?.image_url || ""}
             onFileChange={(file: File) => {
               if (file && file.type.startsWith("image/")) {
                 const preview = URL.createObjectURL(file);
@@ -262,7 +260,7 @@ function AddProductDialog({
               }
             }}
             readOnly={isFormFieldDisabled}
-          /> */}
+          />
           <FormFooter
             renderBackButton={false}
             submitButtonText={

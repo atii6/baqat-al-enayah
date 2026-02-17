@@ -23,7 +23,6 @@ type PriorityItemsProps = {
 function PriorityItems({
   registryItems,
   setCurrentStep,
-  isLastStep = false,
   isLoading = false,
 }: PriorityItemsProps) {
   const { mutateAsync: updateRegistryItem } = useUpdateRegistryItems();
@@ -115,6 +114,7 @@ function PriorityItems({
       );
       toast.success("Product order updated!");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to update product order");
     }
   };

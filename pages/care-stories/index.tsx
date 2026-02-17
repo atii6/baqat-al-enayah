@@ -1,5 +1,5 @@
-import CareStoriesPage from "@/pageComponents/CareStories";
 import React from "react";
+import CareStoriesPage from "@/pageComponents/CareStories";
 
 function CareStories() {
   return <CareStoriesPage />;

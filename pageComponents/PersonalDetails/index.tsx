@@ -211,6 +211,7 @@ function PersonalDetailsPage() {
             renderBackButton={true}
             isSubmitButtonDisabled={isPendingUpdate}
             disableBackButton={isPendingUpdate}
+            onNextClick={handleNextClick}
           />
         </Form>
       )}

@@ -4,7 +4,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   images: {
-    domains: ["images.unsplash.com"],
+    domains: [
+      "images.unsplash.com",
+      "m.media-amazon.com",
+      "bakatalenayah.blob.core.windows.net",
+    ],
   },
   webpack: (config) => {
     config.resolve.alias = {

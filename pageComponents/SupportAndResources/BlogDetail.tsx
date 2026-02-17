@@ -26,7 +26,7 @@ function BlogDetailPage() {
   const blogID = id ? parseInt(id.toString()) : null;
   const post = React.useMemo(
     () => BLOG_POSTS.find((p) => p.id === blogID),
-    [blogID]
+    [blogID],
   );
 
   const [isLiked, setIsLiked] = React.useState(false);
@@ -47,7 +47,7 @@ function BlogDetailPage() {
           <p className="text-slate-600 mb-8">
             The blog post you&apos;re looking for doesn&apos;t exist.
           </p>
-          <Link href="/blog">
+          <Link href="/support-resources">
             <Button className="bg-primary hover:bg-primary/90 text-white">
               Back to Blog
             </Button>
@@ -58,7 +58,7 @@ function BlogDetailPage() {
   }
 
   const relatedPosts = BLOG_POSTS.filter(
-    (p) => p.category === post.category && p.id !== post.id
+    (p) => p.category === post.category && p.id !== post.id,
   ).slice(0, 3);
 
   return (

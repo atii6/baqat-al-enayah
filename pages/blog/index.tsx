@@ -1,5 +1,5 @@
-import BlogPage from "@/pageComponents/Blog";
 import React from "react";
+import BlogPage from "@/pageComponents/Blog";
 
 function Blog() {
   return <BlogPage />;

@@ -22,7 +22,6 @@ import EllipsisTypography from "@/components/shared/EllipsisTypography";
 import { Separator } from "@/components/ui/separator";
 import DonationCard from "./DonationCard";
 import BuildRegistryFooter from "@/components/shared/BuildRegistryFooter";
-import TextField from "@/components/shared/fields/text-field";
 
 const columns: ColumnDef<RegistryItemType>[] = [
   {
@@ -85,36 +84,9 @@ function PreviewAndPublish() {
   const { data: userDetails } = useGetUserDetailsByID(user.id!);
   const { data: giftWell } = useGetGiftWellByUserID(user.id || 0);
   const { data: registryItems } = useGetRegistryItemByRegistryID(
-    user.giftWellID!
+    user.giftWellID!,
   );
   const { data: allDonations } = useGetDonationByUserID(user.id || 0);
-  const [registryTitle, setRegistryTitle] = React.useState<string>("");
-  const [organizerName, setOrganizerName] = React.useState<string>("");
-
-  React.useEffect(() => {
-    if (giftWell) {
-      setRegistryTitle(giftWell.title || "");
-      setOrganizerName(giftWell.organizer_name || "");
-    }
-  }, [giftWell]);
-
-  const handleRegistryTitleChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      e.stopPropagation();
-      e.preventDefault();
-      setRegistryTitle(e.target.value);
-    },
-    []
-  );
-
-  const handleOrganizerNameChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      e.stopPropagation();
-      e.preventDefault();
-      setOrganizerName(e.target.value);
-    },
-    []
-  );
 
   const handleBackClick = () => {
     router.push("/build-care-registry");
@@ -127,7 +99,14 @@ function PreviewAndPublish() {
       privacy: "public" as const,
     };
 
-    await updateGiftWell({ giftwell, id: user.giftWellID });
+    await updateGiftWell(
+      { giftwell, id: user.giftWellID },
+      {
+        onSuccess: () => {
+          toast.success("Registry Published Successfully");
+        },
+      },
+    );
     handleNextClick();
   };
 
@@ -154,15 +133,8 @@ function PreviewAndPublish() {
       !userAddress ||
       !recipientName ||
       !userDetails?.journey ||
-      isRegistryPublic ||
-      !registryTitle,
-    [
-      userAddress,
-      recipientName,
-      userDetails?.journey,
       isRegistryPublic,
-      registryTitle,
-    ]
+    [userAddress, recipientName, userDetails?.journey, isRegistryPublic],
   );
 
   const handleCopyUrl = async () => {
@@ -201,7 +173,7 @@ function PreviewAndPublish() {
   const expandedRegistryItems = React.useMemo(() => {
     return (
       orderedRegistryItems?.flatMap((item) =>
-        Array.from({ length: item.quantity || 1 }, () => item)
+        Array.from({ length: item.quantity || 1 }, () => item),
       ) || []
     );
   }, [orderedRegistryItems]);
@@ -264,31 +236,6 @@ function PreviewAndPublish() {
               </Button>
             </div>
           </GridItem>
-
-          <GridItem className="my-3">
-            <Separator className="w-full" />
-          </GridItem>
-
-          <GridItem className="">
-            <Typography size="md" className=" text-[#262626]">
-              Registry Details
-            </Typography>
-          </GridItem>
-
-          <TextField
-            name="registry_title"
-            label="Registry Title"
-            placeholder="Write registry name that will appear to other people"
-            value={registryTitle}
-            onChange={handleRegistryTitleChange}
-          />
-          <TextField
-            name="organizer_name"
-            label="Organizer Name"
-            placeholder="Who is organizing this registry?"
-            value={organizerName}
-            onChange={handleOrganizerNameChange}
-          />
 
           <GridItem className="my-3">
             <Separator className="w-full" />

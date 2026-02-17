@@ -3,41 +3,38 @@
 import React from "react";
 import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Heart,
-  Share2,
-  Users,
-  Target,
-  Calendar,
-} from "lucide-react";
+import { ArrowLeft, Users, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import Image from "next/image";
-import { DUMMY_STORIES } from "../LandingPage/FamilyCardCarousel";
 import { useRouter } from "next/router";
 import ContributionCTA from "./ContributionCTA";
 import RelatedStoryCard from "./RelatedStoryCard";
+import useGetGiftWellByUserID from "@/hooks/gift-well/useGiftWellByUserID";
+import useGetAllGiftWells from "@/hooks/gift-well/useGetAllGiftwells";
+import { Badge } from "@/components/ui/badge";
+import { SUPPORT_CATEGORY_MAP } from ".";
+import useGetBlogsByUserID from "@/hooks/blog/useGetBlogsByUserID";
+import BlogCard from "../Blog/BlogCard";
+import type { BlogsType } from "@/utilities/types/blog";
 
 export function CareStoryDetailPage() {
   const router = useRouter();
   const { id } = router.query;
-  const storyID = id ? parseInt(id.toString()) : null;
-  const story = React.useMemo(
-    () => DUMMY_STORIES.find((p) => p.id === storyID),
-    [storyID]
-  );
-  const [isLiked, setIsLiked] = useState(false);
-  const [likes, setLikes] = useState(10);
+  const userID = id ? parseInt(id.toString()) : null;
+  const { data: story } = useGetGiftWellByUserID(userID || 0);
+  const { data: allStories } = useGetAllGiftWells();
+  const { data: blogs } = useGetBlogsByUserID(userID || 0);
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikes(isLiked ? likes - 1 : likes + 1);
+  const relatedStories = allStories
+    ?.filter(
+      (p) =>
+        p.support_category === story?.support_category && p.id !== story?.id,
+    )
+    .slice(0, 3);
+
+  const handleBlogClick = (blog: BlogsType) => {
+    router.push(`/support-resources/${blog.user_id}`);
   };
-
-  const relatedStories = DUMMY_STORIES.filter(
-    (p) => p.category === story?.category && p.id !== story.id
-  ).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-slate-50">
@@ -52,21 +49,17 @@ export function CareStoryDetailPage() {
             <span>Back to Stories</span>
           </Link>
           <div className="animate-fade-in">
-            {/* <Badge className="bg-white/30 text-white border-white/50 mb-4">
-              {story.category}
-            </Badge> */}
+            <Badge className="bg-white/30 text-white border-white/50 mb-4">
+              {SUPPORT_CATEGORY_MAP[story?.support_category || ""]}
+            </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              {story?.registry_title}
+              {story?.title}
             </h1>
             <div className="flex flex-wrap items-center gap-6 text-white/90">
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 <span>{story?.organizer_name}</span>
               </div>
-              {/* <div className="flex items-center gap-2">
-                <Target className="w-5 h-5" />
-                <span>{story} supporters</span>
-              </div> */}
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
                 <span>Active</span>
@@ -80,111 +73,66 @@ export function CareStoryDetailPage() {
       <div className="w-4/5 mx-auto px-6 py-16">
         {/* Featured Image */}
         <div className="mb-12 animate-fade-in-delay">
-          <div className="relative overflow-hidden rounded-md h-96 md:h-125 bg-slate-100 group">
+          <div className="relative overflow-hidden rounded-md h-96 md:h-125 bg-accent group shadow-sm">
             <Image
               src={story?.family_photo || "/placeholder.svg"}
-              alt={story?.registry_title || ""}
+              alt={story?.title || ""}
               width={500}
               height={500}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
             />
           </div>
         </div>
 
-        {/* Fundraising Progress */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <Card className="p-8 bg-white shadow-lg animate-fade-in-delay-2s">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-slate-600">
-                Funds Raised
-              </h3>
-              <Target className="w-5 h-5 text-primary" />
-            </div>
-            <p className="text-3xl font-bold text-primary mb-2">$80K</p>
-            <p className="text-sm text-slate-500">of $100K goal</p>
-          </Card>
-
-          <Card className="p-8 bg-white shadow-lg animate-fade-in-delay-3">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-slate-600">Progress</h3>
-              <Zap className="w-5 h-5 text-secondary" />
-            </div>
-            <p className="text-3xl font-bold text-secondary mb-2">75%</p>
-            <div className="w-full bg-slate-200 rounded-full h-2">
-              <div
-                className="h-full bg-linear-to-r from-primary to-secondary rounded-full"
-                style={{ width: `75%` }}
-              ></div>
-            </div>
-          </Card>
-
-          <Card className="p-8 bg-white shadow-lg animate-fade-in-delay-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-slate-600">
-                Supporters
-              </h3>
-              <Users className="w-5 h-5 text-primary" />
-            </div>
-            <p className="text-3xl font-bold text-primary mb-2">49</p>
-            <p className="text-sm text-slate-500">People helping this family</p>
-          </Card>
-        </div>
-
         {/* Story Content */}
-        <div className="bg-white rounded-md shadow-xl p-8 md:p-12 mb-12 animate-fade-in-delay-2">
+        <div className="bg-white rounded-md shadow-md p-8 md:p-12 mb-12 animate-fade-in-delay-2">
           <h2 className="text-3xl font-bold text-slate-900 mb-6">
             Their Story
           </h2>
           <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed space-y-6">
-            <p className="text-lg leading-relaxed">{story?.story}</p>
-            {story?.content && (
+            <p className="text-base leading-relaxed">{story?.description}</p>
+            {story?.description && (
               <div
-                dangerouslySetInnerHTML={{ __html: story.content }}
+                dangerouslySetInnerHTML={{ __html: story.description }}
                 className="space-y-6"
               />
             )}
           </div>
-
-          {/* Engagement Section */}
-          <div className="mt-12 pt-8 border-t border-slate-200 flex flex-wrap items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={handleLike}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors duration-300"
-              >
-                <Heart
-                  className={`w-6 h-6 transition-all duration-300 ${
-                    isLiked ? "fill-secondary text-secondary" : "text-slate-400"
-                  }`}
-                />
-                <span className="font-semibold text-slate-700">{likes}</span>
-              </button>
-              <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors duration-300">
-                <Users className="w-6 h-6 text-slate-400" />
-                <span className="font-semibold text-slate-700">49</span>
-              </button>
-            </div>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors duration-300">
-              <Share2 className="w-6 h-6 text-slate-400" />
-              <span className="font-semibold text-slate-700">Share</span>
-            </button>
-          </div>
         </div>
+
+        {/* Fundraising Progress */}
+        {blogs && blogs.length > 0 && (
+          <div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-6">
+              From the Organizer
+            </h3>
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              {blogs?.map((blog) => (
+                <BlogCard
+                  key={blog.id}
+                  blog={blog}
+                  isEditable={false}
+                  onClick={handleBlogClick}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Donate CTA */}
         <ContributionCTA />
 
         {/* Related Stories */}
-        {relatedStories.length > 0 && (
+        {relatedStories && relatedStories.length > 0 && (
           <div className="animate-fade-in-delay-4">
-            <h3 className="text-3xl font-bold text-slate-900 mb-8">
+            <h3 className="text-2xl font-bold text-slate-900 mb-6">
               Similar Stories
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
               {relatedStories.map((relatedStory, index) => (
                 <RelatedStoryCard
                   key={relatedStory.id}
-                  relatedStory={relatedStory}
+                  relatedStory={relatedStory || []}
                   index={index}
                 />
               ))}
@@ -222,23 +170,5 @@ export function CareStoryDetailPage() {
         </div>
       </div>
     </div>
-  );
-}
-
-// Helper icon for Zap
-function Zap(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-    </svg>
   );
 }

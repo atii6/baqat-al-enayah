@@ -1,13 +1,29 @@
 import db from "@/models";
+const blobSasToken = process.env.AZURE_SAS_TOKEN;
 
 const getAllBlogs = async () => {
   return await db.blog.findAll({ where: { status: "published" } });
 };
 
 const getBlogsById = async (id) => {
-  return await db.blog.findAll({
+  const response = await db.blog.findAll({
     where: { user_id: id },
   });
+
+  const blogs = response.map((blog) => {
+    const blogData = blog.toJSON(); // convert Sequelize instance to plain object
+
+    return {
+      ...blogData,
+      featured_image: blogData.featured_image
+        ? `${blogData.featured_image}?${blobSasToken}`
+        : null,
+    };
+  });
+
+  console.log("getBlogsById", { blogs });
+
+  return blogs; // ✅ return modified data
 };
 
 const createBlog = async (registryItemData) => {

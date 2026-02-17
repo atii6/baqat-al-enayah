@@ -23,8 +23,8 @@ const sendVerificationEmail = async (email) => {
       verifyUrl,
       "Verify Your Email",
       "Click the button below to verify your email and activate your account.",
-      "Verify Email"
-    )
+      "Verify Email",
+    ),
   );
 };
 
@@ -75,10 +75,10 @@ const getUserById = async (id) => {
 
   const isPersonalDetailsCompleted = Boolean(
     userDetails?.journey &&
-      userDetails?.street_address &&
-      userDetails?.city &&
-      userDetails?.state &&
-      userDetails?.zip_code
+    userDetails?.street_address &&
+    userDetails?.city &&
+    userDetails?.state &&
+    userDetails?.zip_code,
   );
 
   const isRegistryPublished = giftWell?.privacy === "public" ? true : false;
@@ -168,7 +168,7 @@ const createUser = async (userData) => {
         is_deleted,
         // stripe_account_id: account.id,
       },
-      { transaction }
+      { transaction },
     );
 
     if (!isRecipientSelf) {
@@ -182,13 +182,13 @@ const createUser = async (userData) => {
           recipient_email,
           role_id: careGiverRole.id,
         },
-        { transaction }
+        { transaction },
       );
     }
 
     await db.userDetails.create(
       { user_id: newUser.id, ...userDetails },
-      { transaction }
+      { transaction },
     );
 
     await db.giftWell.create(
@@ -197,7 +197,7 @@ const createUser = async (userData) => {
         privacy: "private",
         title: `${newUser.first_name} ${newUser.last_name}'s Care Registry`,
       },
-      { transaction }
+      { transaction },
     );
 
     const emailsToVerify = isRecipientSelf
@@ -233,7 +233,7 @@ const getUserByEmail = async (email) => {
 
     if (account.is_deleted) {
       throw new Error(
-        "Your account has been deactivated. Please contact support for assistance."
+        "Your account has been deactivated. Please contact support for assistance.",
       );
     }
 
@@ -250,8 +250,8 @@ const getUserByEmail = async (email) => {
         resetUrl,
         "Reset your password",
         "Click the button below to reset your password.",
-        "Reset Password"
-      )
+        "Reset Password",
+      ),
     );
 
     const newAccount = account.get({ plain: true });
@@ -269,7 +269,7 @@ const getUserByEmail = async (email) => {
 
   if (user.is_deleted) {
     throw new Error(
-      "Your account has been deactivated. Please contact support for assistance."
+      "Your account has been deactivated. Please contact support for assistance.",
     );
   }
   const registry = await db.giftWell.findOne({

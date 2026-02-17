@@ -12,9 +12,7 @@ import Form from "@/components/form/Form";
 import FormTextField from "@/components/form/Fields/FormTextField";
 import FormMultiSelectField from "@/components/form/Fields/FormMultiSelectField";
 import FormFooter from "@/components/form/FormFooter";
-import { useS3Upload } from "@/hooks/s3-bucket/useS3Upload";
 import { toast } from "sonner";
-// import { GridItem } from "@/components/ui/Grid";
 import Typography from "@/components/ui/typography";
 import type { BlogsType } from "@/utilities/types/blog";
 import { BLOG_STATUS, BUCKET_FOLDER_NAME } from "@/constants";
@@ -23,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { GridItem } from "@/components/grid";
 import FormRichTextField from "@/components/form/Fields/FormRichTextField";
-// import FormRichTextField from "@/components/form/Fields/FormRichTextField";
+import { useAzureUpload } from "@/hooks/blob-storage/useBlobFileUpload";
 
 type CategoryOption = { id: number; name: string };
 
@@ -48,7 +46,7 @@ function BlogPostFormModal({
   onUpdate,
   userId,
 }: Props) {
-  const { uploadFile, isPending } = useS3Upload();
+  const { uploadFile, isPending } = useAzureUpload();
   const [previewUrl, setPreviewUrl] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -72,7 +70,7 @@ function BlogPostFormModal({
     title: selectedPost?.title || "",
     ...(isAdminBlogs && { category: selectedPost?.category.map(String) || [] }),
     description: selectedPost?.description || "",
-    featured_image: "/hero_image.jpg",
+    featured_image: previewUrl || "",
   };
 
   const schema = z.object({
@@ -81,34 +79,30 @@ function BlogPostFormModal({
       category: z.array(z.string()).min(1, "Select at least one category"),
     }),
     description: z.string().min(1, "Description is required"),
-    // featured_image: z.union([z.string(), z.instanceof(File)]),
-    featured_image: z.string().optional(),
+    featured_image: z.union([z.string(), z.instanceof(File)]),
   });
 
   type FormValues = z.infer<typeof schema>;
 
   const handleSubmit = async (values: FormValues) => {
-    // let imageUrl = previewUrl || "";
+    let imageUrl = previewUrl || "";
 
     try {
-      const typeKey = postType.toUpperCase() as keyof typeof BUCKET_FOLDER_NAME;
-
-      // if (values.featured_image instanceof File) {
-      //   // imageUrl = await uploadFile({
-      //   //   file: values.featured_image,
-      //   //   userId,
-      //   //   type: BUCKET_FOLDER_NAME[typeKey],
-      //   // });
-      // }
+      if (values.featured_image instanceof File) {
+        const response = await uploadFile({
+          file: values.featured_image,
+        });
+        imageUrl = response.url;
+      }
     } catch (err) {
-      toast.error("Image upload failed");
+      toast.error(`Image upload failed: ${err}`);
       return;
     }
 
     const postData = {
       title: values.title,
       description: values.description,
-      featured_image: "/hero_image.jpg",
+      featured_image: imageUrl,
       category:
         isAdminBlogs && Array.isArray(values.category)
           ? values.category.map(Number)
@@ -134,7 +128,7 @@ function BlogPostFormModal({
               postData.status === BLOG_STATUS.DRAFT
                 ? "saved as draft"
                 : BLOG_STATUS.PUBLISHED
-            } successfully.`
+            } successfully.`,
           );
         }
       }
@@ -147,7 +141,7 @@ function BlogPostFormModal({
   };
 
   const handleProfileImageUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -160,13 +154,11 @@ function BlogPostFormModal({
     }
 
     try {
-      const typeKey = postType.toUpperCase() as keyof typeof BUCKET_FOLDER_NAME;
-      // const url = await uploadFile({
-      //   file,
-      //   userId,
-      //   type: BUCKET_FOLDER_NAME[typeKey],
-      // });
-      // setPreviewUrl(url);
+      const response = await uploadFile({
+        file,
+      });
+
+      setPreviewUrl(response.url);
     } catch (error) {
       toast.error("Profile image upload failed.");
     }

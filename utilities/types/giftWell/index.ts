@@ -6,6 +6,8 @@ export type GiftWellType = {
   title?: string | null;
   description?: string | null;
   organizer_name?: string | null;
+  support_category?: string | null;
+  family_photo?: string | null;
   user_id: number;
   privacy: "public" | "private";
   created_at?: string;

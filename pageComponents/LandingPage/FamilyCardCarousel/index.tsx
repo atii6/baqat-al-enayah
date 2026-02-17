@@ -3,84 +3,20 @@ import LeafDecoration, { LeafCluster } from "../LeafDecoration";
 import FamilyStoryCard from "../HeroSection/FamilyStoryCard";
 import CustomCarousel from "@/components/shared/CustomCarousel";
 import Typography from "@/components/ui/typography";
-
-export const DUMMY_STORIES = [
-  {
-    id: 1,
-    family_photo:
-      "https://images.unsplash.com/photo-1609220136736-443140cffec6?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    registry_title: "The Thompson Family's Circle of Hope",
-    registry_description: "Standing together through Cancer Recovery",
-    organizer_name: "Sarah Thompson",
-    content: "",
-    category: "Medical Emergency",
-    story:
-      "Our family is navigating the challenges of cancer recovery. By sharing our story, we hope to receive emotional support, care visits, and small acts of kindness that make each day easier.",
-  },
-  {
-    id: 2,
-    family_photo:
-      "https://images.unsplash.com/photo-1588979355313-6711a095465f?q=80&w=744&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    registry_title: "A Helping Hand for the Martinez Family",
-    registry_description: "Support during post-surgery recovery",
-    organizer_name: "Carlos Martinez",
-    content: "",
-    category: "Caregiver Support",
-    story:
-      "After a major surgery, daily tasks have become difficult. We’re reaching out to our community for meal support, check-ins, and encouragement as we focus on healing.",
-  },
-  {
-    id: 3,
-    family_photo:
-      "https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?q=80&w=1508&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    registry_title: "Welcoming Baby Noor with Love",
-    registry_description: "Care and support for new parents",
-    organizer_name: "Ayesha Khan",
-    content: "",
-    category: "Childcare",
-    story:
-      "As new parents, adjusting to life with our newborn has been both joyful and overwhelming. Any help with meals, errands, or guidance would mean the world to us.",
-  },
-  {
-    id: 4,
-    family_photo:
-      "https://images.unsplash.com/photo-1559734840-f9509ee5677f?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    registry_title: "Caring for Dad: The Wilson Family",
-    registry_description: "Long-term care and companionship",
-    organizer_name: "Emily Wilson",
-    content: "",
-    category: "Caregiver Support",
-    story:
-      "We’re caring for our father during his long-term recovery. Support through visits, companionship, or shared responsibilities would help us stay strong together.",
-  },
-  {
-    id: 5,
-    family_photo:
-      "https://images.unsplash.com/photo-1506836467174-27f1042aa48c?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    registry_title: "The Thompson Family's Circle of Hope",
-    registry_description: "Standing together through Cancer Recovery",
-    organizer_name: "Sarah Thompson",
-    content: "",
-    category: "Mental Health",
-    story:
-      "Our family is navigating the challenges of cancer recovery. By sharing our story, we hope to receive emotional support, care visits, and small acts of kindness that make each day easier.",
-  },
-  {
-    id: 6,
-    family_photo:
-      "https://images.unsplash.com/photo-1602255680702-c47261041a97?q=80&w=776&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    registry_title: "A Helping Hand for the Martinez Family",
-    registry_description: "Support during post-surgery recovery",
-    organizer_name: "Carlos Martinez",
-    content: "",
-    category: "Cancer Treatment",
-    story:
-      "After a major surgery, daily tasks have become difficult. We’re reaching out to our community for meal support, check-ins, and encouragement as we focus on healing.",
-  },
-];
+import useGetAllGiftWells from "@/hooks/gift-well/useGetAllGiftwells";
+import { SUPPORT_CATEGORY_MAP } from "@/pageComponents/CareStories";
 
 function FamilyCardCarousel() {
-  const carouselItems = DUMMY_STORIES.map((item, index) => (
+  const { data: allGiftwells } = useGetAllGiftWells();
+  const userStories = allGiftwells?.map((story) => {
+    const categoryValue = story.support_category?.toLowerCase();
+
+    return {
+      ...story,
+      support_category: SUPPORT_CATEGORY_MAP[categoryValue || ""],
+    };
+  });
+  const carouselItems = userStories?.map((item, index) => (
     <FamilyStoryCard key={index} story={item} />
   ));
 
@@ -113,7 +49,7 @@ function FamilyCardCarousel() {
           </Typography>
         </div>
 
-        <CustomCarousel items={carouselItems} />
+        <CustomCarousel items={carouselItems || []} />
       </div>
     </section>
   );
