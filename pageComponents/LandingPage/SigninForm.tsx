@@ -63,6 +63,7 @@ function SigninForm({ setIsSignInForm }: Props) {
           label="Email"
           placeholder="john.doe@example.com"
           className="text-white"
+          labelStyles="text-white"
         />
         <FormTextField
           name="password"
@@ -70,6 +71,7 @@ function SigninForm({ setIsSignInForm }: Props) {
           placeholder="••••••••"
           type="password"
           className="text-white"
+          labelStyles="text-white"
         />
         <GridItem className="m-0 p-0">
           <span className="text-white/90 text-sm">
