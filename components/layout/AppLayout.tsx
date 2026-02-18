@@ -58,7 +58,11 @@ function AppLayout({ Component, pageProps }: AppProps) {
   ]);
 
   if (!status || status === "loading") {
-    return <LoaderLogo />;
+    return (
+      <div className="w-full h-screen">
+        <LoaderLogo />
+      </div>
+    );
   }
 
   if (!isAuthenticated && !isProtectedRoute) {

@@ -27,6 +27,7 @@ type FormFooterProps = {
     | "outline";
   onNextClick?: () => void;
   disableNextButton?: boolean;
+  nextButtonType?: "button" | "submit";
 };
 
 function FormFooter({
@@ -43,6 +44,7 @@ function FormFooter({
   disableBackButton = false,
   onNextClick,
   disableNextButton = false,
+  nextButtonType = "button",
 }: FormFooterProps) {
   const { formState } = useFormContext();
   const isSubmissionDisabled =
@@ -84,7 +86,7 @@ function FormFooter({
             {submitButtonText}
           </FormButton>
           <Button
-            type="button"
+            type={nextButtonType}
             onClick={onNextClick}
             disabled={disableNextButton}
           >

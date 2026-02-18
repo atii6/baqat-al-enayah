@@ -3,7 +3,7 @@ import Image from "next/image";
 
 function LoaderLogo() {
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-transparent">
+    <div className="w-full h-full flex justify-center items-center bg-transparent">
       <div className="w-96 h-72">
         <Image
           src="/baqat_al_enayah_logo.png"
