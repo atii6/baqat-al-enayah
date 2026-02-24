@@ -25,6 +25,8 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
     user.giftWellID || 0,
   );
   const { mutateAsync: updateStory } = useUpdateGiftWell();
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+
   console.log("Giftwell", Giftwell);
 
   const initialValues = {
@@ -32,7 +34,7 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
     description: Giftwell?.description || "",
     organizer_name: Giftwell?.organizer_name || "",
     support_category: Giftwell?.support_category || "",
-    family_photo: "",
+    family_photo: Giftwell?.family_photo || "",
   };
   const validationSchema = z.object({
     title: z.string().min(1, "Title is required"),
@@ -124,7 +126,20 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
         options={storyCategory}
         className="mb-4"
       />
-      <FormTextField name="family_photo" label="Family Photo" type="file" />
+      <FormTextField
+        className="col-span-12 md:col-span-6"
+        type="file"
+        accept="image/*"
+        name="imageUploadedUrl"
+        label=""
+        previewImage={previewUrl || ""}
+        onFileChange={(file: File) => {
+          if (file && file.type.startsWith("image/")) {
+            const preview = URL.createObjectURL(file);
+            setPreviewUrl(preview);
+          }
+        }}
+      />
       <FormFooter
         onNextClick={handleNextClick}
         renderBackButton

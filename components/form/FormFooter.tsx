@@ -54,6 +54,8 @@ function FormFooter({
     backButtonType === "submit"
       ? disableBackButton || isSubmissionDisabled
       : disableBackButton;
+
+  const isNextDisabled = disableNextButton || isSubmissionDisabled;
   return (
     <GridItem size={size}>
       <div className="flex items-center justify-between w-full gap-6 md:gap-12">
@@ -88,7 +90,7 @@ function FormFooter({
           <Button
             type={nextButtonType}
             onClick={onNextClick}
-            disabled={disableNextButton}
+            disabled={isNextDisabled}
           >
             Next
             <ArrowRight size={20} />
