@@ -20,6 +20,10 @@ function FamilyCardCarousel() {
     <FamilyStoryCard key={index} story={item} />
   ));
 
+  if (!carouselItems?.length) {
+    return null;
+  }
+
   return (
     <section className="relative my-36 px-2 md:px-8 lg:px-12 overflow-hidden w-3/4 mx-auto">
       <LeafCluster className="top-5 left-5" />

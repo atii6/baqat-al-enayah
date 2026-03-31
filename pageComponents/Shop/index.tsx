@@ -59,7 +59,7 @@ const Shop = () => {
         value: category.id,
       })) ?? []),
     ],
-    [productCategory]
+    [productCategory],
   );
 
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -87,7 +87,7 @@ const Shop = () => {
 
         return matchesSearch && matchesCategory && matchesPrice;
       }),
-    [allProducts, searchQuery, selectedCategory, selectedPrice]
+    [allProducts, searchQuery, selectedCategory, selectedPrice],
   );
 
   return (
@@ -196,17 +196,6 @@ const Shop = () => {
             </span>{" "}
             products
           </p>
-          <Select defaultValue="featured">
-            <SelectTrigger className="w-48 rounded-xl bg-card shadow-sm">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="featured">Featured</SelectItem>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {/* Products Grid */}

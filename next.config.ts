@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       { hostname: "images.unsplash.com" },
       { hostname: "m.media-amazon.com" },
       { hostname: "bakatalenayah.blob.core.windows.net" },
+      { hostname: "app.starbucks.com" },
     ],
   },
   webpack: (config) => {

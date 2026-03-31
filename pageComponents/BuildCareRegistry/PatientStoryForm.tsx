@@ -1,10 +1,10 @@
+import React from "react";
 import FormSelectField from "@/components/form/Fields/FormSelectField";
 import FormTextareaField from "@/components/form/Fields/FormTextareaField";
 import FormTextField from "@/components/form/Fields/FormTextField";
 import Form from "@/components/form/Form";
 import FormFooter from "@/components/form/FormFooter";
 import { useRouter } from "next/router";
-import React from "react";
 import z from "zod";
 import { STORY_CATEGORIES } from "../CareStories";
 import useGetGiftWellByUserID from "@/hooks/gift-well/useGiftWellByUserID";
@@ -21,13 +21,9 @@ type PatientStoryFormProps = {
 function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
   const router = useRouter();
   const user = useUserStore(React.useCallback((state) => state, []));
-  const { data: Giftwell, isLoading } = useGetGiftWellByUserID(
-    user.giftWellID || 0,
-  );
+  const { data: Giftwell, isLoading } = useGetGiftWellByUserID(user.id || 0);
   const { mutateAsync: updateStory } = useUpdateGiftWell();
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
-
-  console.log("Giftwell", Giftwell);
 
   const initialValues = {
     title: Giftwell?.title || "",
@@ -80,7 +76,7 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
   };
 
   const handleBackClick = () => {
-    router.push("/dashboard/personal-details");
+    router.push("/personal-details");
   };
 
   const storyCategory = React.useMemo(
