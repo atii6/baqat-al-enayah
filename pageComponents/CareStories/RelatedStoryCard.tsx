@@ -1,11 +1,11 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ExtendedGiftWellType } from "@/utilities/types/giftWell";
 import { SUPPORT_CATEGORY_MAP } from ".";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 type Props = { relatedStory: ExtendedGiftWellType; index: number };
 
@@ -20,7 +20,7 @@ function RelatedStoryCard({ relatedStory, index }: Props) {
       <Card className="h-full overflow-hidden hover:shadow-2xl transition-all duration-500 py-0 transform hover:-translate-y-2 bg-white border-slate-200 cursor-pointer flex flex-col">
         <div className="relative h-40 overflow-hidden bg-slate-100">
           <Image
-            src={relatedStory.family_photo || "/placeholder.svg"}
+            src={getAzureImageUrl(relatedStory.family_photo) || "/placeholder.svg"}
             alt={relatedStory.title || ""}
             width={250}
             height={250}

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Users, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ import { SUPPORT_CATEGORY_MAP } from ".";
 import useGetBlogsByUserID from "@/hooks/blog/useGetBlogsByUserID";
 import BlogCard from "../Blog/BlogCard";
 import type { BlogsType } from "@/utilities/types/blog";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 export function CareStoryDetailPage() {
   const router = useRouter();
@@ -75,7 +75,7 @@ export function CareStoryDetailPage() {
         <div className="mb-12 animate-fade-in-delay">
           <div className="relative overflow-hidden rounded-md h-96 md:h-125 bg-accent group shadow-sm">
             <Image
-              src={story?.family_photo || "/placeholder.svg"}
+              src={getAzureImageUrl(story?.family_photo) || "/placeholder.svg"}
               alt={story?.title || ""}
               width={500}
               height={500}

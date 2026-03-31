@@ -22,6 +22,7 @@ import EllipsisTypography from "@/components/shared/EllipsisTypography";
 import { Separator } from "@/components/ui/separator";
 import DonationCard from "./DonationCard";
 import BuildRegistryFooter from "@/components/shared/BuildRegistryFooter";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 const columns: ColumnDef<RegistryItemType>[] = [
   {
@@ -33,7 +34,7 @@ const columns: ColumnDef<RegistryItemType>[] = [
         <div className="flex items-center gap-3 w-64">
           <div className="max-w-10 max-h-10 overflow-hidden rounded-md">
             <Image
-              src={registry_product?.image_url ?? ""}
+              src={getAzureImageUrl(registry_product?.image_url) ?? ""}
               alt="product image"
               width={200}
               height={200}

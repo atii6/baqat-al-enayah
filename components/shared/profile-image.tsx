@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 type Props = {
   profileImageURL: string;
@@ -26,7 +27,7 @@ function ProfileImage({
     <>
       {profileImageURL ? (
         <Image
-          src={profileImageURL}
+          src={getAzureImageUrl(profileImageURL)}
           alt="Profile"
           width={imageWidth}
           height={imageHeight}

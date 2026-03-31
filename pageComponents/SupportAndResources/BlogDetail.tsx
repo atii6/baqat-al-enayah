@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BLOG_POSTS } from ".";
 import Image from "next/image";
+import { getAzureImageUrl } from "@/lib/azure-url";
 import { useRouter } from "next/router";
 import RelatedBlogsCard from "./RelatedBlogsCard";
 import Typography from "@/components/ui/typography";
@@ -100,7 +101,7 @@ function BlogDetailPage() {
         <div className="mb-12 animate-fade-in-delay">
           <div className="relative overflow-hidden rounded-md h-96 md:h-125 bg-slate-100 group">
             <Image
-              src={post.image || "/placeholder.svg"}
+              src={getAzureImageUrl(post.image) || "/placeholder.svg"}
               alt={post.title}
               width={500}
               height={500}

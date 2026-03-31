@@ -1,8 +1,9 @@
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React from "react";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 export type BlogPostType = {
   id: number;
@@ -30,7 +31,7 @@ function FeaturedBlogCard({ featuredPost }: Props) {
           {/* Featured Image */}
           <div className="relative h-96 md:h-full overflow-hidden bg-slate-100">
             <Image
-              src={featuredPost.image || "/placeholder.svg"}
+              src={getAzureImageUrl(featuredPost.image) || "/placeholder.svg"}
               alt={featuredPost.title}
               width={700}
               height={700}

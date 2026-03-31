@@ -23,6 +23,7 @@ import EllipsisTypography from "@/components/shared/EllipsisTypography";
 import { ROUTES } from "@/constants/routes";
 import BlogPostFormModal from "./BlogPostFormModal";
 import ConfirmationDialog from "@/components/shared/confirmation-dialog";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 interface BlogCardProps {
   blog: BlogsType;
@@ -186,10 +187,11 @@ export default function BlogCard({
         {blog.attachments && (
           <div className="p-0 w-full h-40">
             <Image
-              src={blog.featured_image || "/hero_image.jpg"}
+              src={getAzureImageUrl(blog.featured_image) || "/hero_image.jpg"}
               alt={blog.title}
               width={500}
               height={500}
+              unoptimized={true}
               className="w-full h-full object-cover rounded-md"
             />
           </div>

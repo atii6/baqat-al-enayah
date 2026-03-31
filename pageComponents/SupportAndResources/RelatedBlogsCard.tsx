@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { BlogPostType } from "./FeaturedBlogCard";
 import EllipsisTypography from "@/components/shared/EllipsisTypography";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 type Props = { relatedPost: BlogPostType; index: number };
 
@@ -19,7 +20,7 @@ function RelatedBlogsCard({ relatedPost, index }: Props) {
       <Card className="h-full py-0 gap-2 overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-slate-200 cursor-pointer">
         <div className="relative h-40 overflow-hidden bg-slate-100">
           <Image
-            src={relatedPost.image || "/placeholder.svg"}
+            src={getAzureImageUrl(relatedPost.image) || "/placeholder.svg"}
             alt={relatedPost.title}
             width={200}
             height={200}

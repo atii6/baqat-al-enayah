@@ -22,6 +22,7 @@ import Image from "next/image";
 import { GridItem } from "@/components/grid";
 import FormRichTextField from "@/components/form/Fields/FormRichTextField";
 import { useAzureUpload } from "@/hooks/blob-storage/useBlobFileUpload";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 type CategoryOption = { id: number; name: string };
 
@@ -191,10 +192,11 @@ function BlogPostFormModal({
             <div className="relative group w-full h-60 rounded-sm overflow-hidden border border-gray-300 shadow-md">
               {previewUrl ? (
                 <Image
-                  src={previewUrl}
+                  src={getAzureImageUrl(previewUrl) || ""}
                   alt="article-image"
                   width={500}
                   height={500}
+                  unoptimized={true}
                   className="object-cover w-full h-full"
                 />
               ) : (

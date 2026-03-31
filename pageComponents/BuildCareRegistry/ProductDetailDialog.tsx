@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { EditIcon, X } from "lucide-react";
@@ -11,7 +12,7 @@ import CheckMarkIcon from "@/components/svg/CheckMarkIcon";
 import type { ProductType } from "@/utilities/types/product";
 // import EllipsisTypography from "@/pageComponents/common/EllipsisTypography";
 import { useUserStore } from "@/store";
-import React from "react";
+import { getAzureImageUrl } from "@/lib/azure-url";
 import useGetRoleById from "@/hooks/role/useGetRoleByID";
 import { USER_ROLES } from "@/constants";
 import useGetUserDetailsByID from "@/hooks/user-details/useGetUserDetailsByID";
@@ -93,7 +94,7 @@ function ProductDetailDialog({
           <GridItem className="p-1 col-span-12 md:col-span-7">
             <div className="md:h-100 md:w-100  rounded-md">
               <Image
-                src={product?.image_url || ""}
+                src={getAzureImageUrl(product?.image_url) || ""}
                 alt={product?.name || ""}
                 width={400}
                 height={400}

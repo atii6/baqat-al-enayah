@@ -12,6 +12,13 @@ import { useUserStore } from "@/store";
 import { Spinner } from "@/components/ui/spinner";
 import useUpdateGiftWell from "@/hooks/gift-well/useUpdateGiftWell";
 import { toast } from "sonner";
+import { GridItem } from "@/components/grid";
+import Image from "next/image";
+import Typography from "@/components/ui/typography";
+import { useAzureUpload } from "@/hooks/blob-storage/useBlobFileUpload";
+import { CameraIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 type PatientStoryFormProps = {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
@@ -23,7 +30,20 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
   const user = useUserStore(React.useCallback((state) => state, []));
   const { data: Giftwell, isLoading } = useGetGiftWellByUserID(user.id || 0);
   const { mutateAsync: updateStory } = useUpdateGiftWell();
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+  const [rawImageUrl, setRawImageUrl] = React.useState<string | null>(null);
+  const previewUrl = React.useMemo(() => getAzureImageUrl(rawImageUrl), [rawImageUrl]);
+  const { uploadFile, isPending } = useAzureUpload();
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  console.log("Giftwell", Giftwell);
+
+  React.useEffect(() => {
+    setRawImageUrl(Giftwell?.family_photo || "");
+  }, [Giftwell]);
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const initialValues = {
     title: Giftwell?.title || "",
@@ -45,21 +65,57 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
       }),
     organizer_name: z.string().min(1, "Organizer name is required"),
     support_category: z.string().min(1, "Need type is required"),
-    family_photo: z.string().optional(),
+    family_photo: z.union([z.string(), z.instanceof(File)]).optional(),
   });
+
+  const handleProfileImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const isImage = file.type.startsWith("image/");
+
+    if (!isImage) {
+      toast.error("Only image files are allowed");
+      return;
+    }
+
+    try {
+      const response = await uploadFile({
+        file,
+      });
+      setRawImageUrl(response.url);
+    } catch (error) {
+      toast.error("Profile image upload failed.");
+    }
+  };
 
   const handleNextClick = () => {
     setCurrentStep((prev) => prev + 1);
   };
 
   const handleSubmit = async (values: z.infer<typeof validationSchema>) => {
+    let imageUrl = rawImageUrl || "";
+
+    try {
+      if (values.family_photo instanceof File) {
+        const response = await uploadFile({
+          file: values.family_photo,
+        });
+        imageUrl = response.url;
+      }
+    } catch (err) {
+      toast.error(`Image upload failed: ${err}`);
+      return;
+    }
     const giftwell = {
       ...Giftwell,
       ...values,
       id: Giftwell?.id || 0,
       user_id: Giftwell?.user_id || 0,
       privacy: Giftwell?.privacy || "private",
-      family_photo: "/baqat_al_enayah_logo.png",
+      family_photo: imageUrl,
     };
     await updateStory(
       {
@@ -70,6 +126,7 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
         onSuccess: () => {
           toast.success("Story updated successfully");
           handleNextClick();
+          setRawImageUrl("");
         },
       },
     );
@@ -77,6 +134,7 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
 
   const handleBackClick = () => {
     router.push("/personal-details");
+    setRawImageUrl("");
   };
 
   const storyCategory = React.useMemo(
@@ -100,6 +158,51 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
       onSubmit={handleSubmit}
       containerStyles="gap-0"
     >
+      <GridItem className="mb-4">
+        <div className="relative group w-full h-60 rounded-sm overflow-hidden border border-gray-300 shadow-md">
+          {previewUrl ? (
+            <Image
+              src={previewUrl || "/placeholder.svg"}
+              alt="article-image"
+              width={500}
+              height={500}
+              unoptimized={true}
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200 gap-3">
+              <Typography size="xl" className="font-semibold text-gray-700">
+                Add Family Photo
+              </Typography>
+            </div>
+          )}
+
+          <div
+            onClick={!isPending ? handleImageClick : undefined}
+            className={`absolute inset-0 bg-gray-900 bg-opacity-10 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity ${
+              isPending && "hidden"
+            }`}
+            title="Add Family Photo"
+          >
+            <CameraIcon className="text-white" />
+          </div>
+          <Input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            name="featured_image"
+            ref={fileInputRef}
+            onChange={handleProfileImageUpload}
+            disabled={isPending}
+            title="Add Family Photo"
+          />
+          {isPending && (
+            <div className="absolute inset-0 bg-white bg-opacity-60 flex items-center justify-center z-10">
+              <div className="w-6 h-6 border-2 border-t-transparent border-blue-500 rounded-full animate-spin" />
+            </div>
+          )}
+        </div>
+      </GridItem>
       <FormTextField
         name="title"
         label="Registry Title"
@@ -122,20 +225,7 @@ function PatientStoryForm({ setCurrentStep }: PatientStoryFormProps) {
         options={storyCategory}
         className="mb-4"
       />
-      <FormTextField
-        className="col-span-12 md:col-span-6"
-        type="file"
-        accept="image/*"
-        name="imageUploadedUrl"
-        label=""
-        previewImage={previewUrl || ""}
-        onFileChange={(file: File) => {
-          if (file && file.type.startsWith("image/")) {
-            const preview = URL.createObjectURL(file);
-            setPreviewUrl(preview);
-          }
-        }}
-      />
+
       <FormFooter
         onNextClick={handleNextClick}
         renderBackButton

@@ -1,7 +1,8 @@
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
-import React from "react";
+import { getAzureImageUrl } from "@/lib/azure-url";
 import { BlogPostType } from "./FeaturedBlogCard";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import EllipsisTypography from "@/components/shared/EllipsisTypography";
@@ -30,7 +31,7 @@ function BlogCard({ blogPost, index, onLike, likedPosts }: Props) {
           className="cursor-pointer relative h-48 overflow-hidden bg-slate-100"
         >
           <Image
-            src={blogPost.image || "/placeholder.svg"}
+            src={getAzureImageUrl(blogPost.image) || "/placeholder.svg"}
             alt={blogPost.title}
             width={500}
             height={500}

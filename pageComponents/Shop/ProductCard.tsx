@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import type { ProductType } from "@/utilities/types/product";
 import { cn } from "@/lib/utils";
+import { getAzureImageUrl } from "@/lib/azure-url";
 import EllipsisTypography from "@/components/shared/EllipsisTypography";
 import useGetAllProductTypes from "@/hooks/product-types/useGetAllProductTypes";
 import type { ProductTypesType } from "@/utilities/types/product-type";
@@ -42,10 +43,11 @@ function ProductCard({ index, product, classname, onCardClick }: Props) {
     >
       <div className={`relative`}>
         <Image
-          src={product?.image_url || ""}
+          src={getAzureImageUrl(product?.image_url) || ""}
           alt={product?.name || ""}
           width={400}
           height={400}
+          unoptimized={true}
           className={`w-full object-cover h-48`}
         />
         <span className="absolute top-3 right-3 bg-linear-to-r from-primary to-secondary text-primary-foreground text-xs font-medium px-2 py-1 rounded-full">

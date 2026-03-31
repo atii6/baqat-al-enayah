@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import BuildRegistryFooter from "@/components/shared/BuildRegistryFooter";
 import EditStatusDropdown from "./EditStatusDropdown";
 import { DragHandle } from "@/components/shared/drag-handle";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 type PriorityItemsProps = {
   registryItems: RegistryItemType[];
@@ -41,7 +42,7 @@ function PriorityItems({
           <div className="flex items-center gap-3 w-64">
             <div className="max-w-10 max-h-10 overflow-hidden rounded-md">
               <Image
-                src={product?.image_url ?? ""}
+                src={getAzureImageUrl(product?.image_url) ?? ""}
                 alt="product image"
                 width={300}
                 height={300}

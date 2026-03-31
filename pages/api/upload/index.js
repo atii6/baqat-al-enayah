@@ -13,11 +13,9 @@ const handler = async (req, res) => {
   const form = new IncomingForm();
 
   form.parse(req, async (err, fields, files) => {
-    console.log("handler==>", err, fields, files);
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    console.log("handler==>1");
 
     const uploadedFile = Array.isArray(files.file) ? files.file[0] : files.file;
 
@@ -25,12 +23,9 @@ const handler = async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    console.log("handler==>2", uploadedFile);
-
     if (!uploadedFile) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-    console.log("handler==>3", uploadedFile.filepath);
 
     // Read file buffer
     const buffer = fs.readFileSync(uploadedFile.filepath); // filepath comes from formidable
