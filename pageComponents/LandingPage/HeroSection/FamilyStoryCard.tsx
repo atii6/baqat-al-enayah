@@ -6,6 +6,7 @@ import EllipsisTypography from "@/components/shared/EllipsisTypography";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import type { GiftWellType } from "@/utilities/types/giftWell";
+import { getAzureImageUrl } from "@/lib/azure-url";
 
 type FamilyStoryCardProps = {
   story: GiftWellType;
@@ -23,7 +24,7 @@ function FamilyStoryCard({ story }: FamilyStoryCardProps) {
       <div className="flex items-start gap-6 relative">
         <div className="w-32 h-24 bg-linear-to-br from-accent to-leaf-light rounded-2xl flex items-center shadow-md justify-center overflow-hidden">
           <Image
-            src={family_photo || ""}
+            src={getAzureImageUrl(family_photo) || ""}
             alt="Family photo"
             width={100}
             height={100}
