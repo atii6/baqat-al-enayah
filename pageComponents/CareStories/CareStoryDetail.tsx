@@ -25,6 +25,11 @@ export function CareStoryDetailPage() {
   const { data: allStories } = useGetAllGiftWells();
   const { data: blogs } = useGetBlogsByUserID(userID || 0);
 
+  const familyPhoto = React.useMemo(
+    () => getAzureImageUrl(story?.family_photo),
+    [story?.family_photo],
+  );
+
   const relatedStories = allStories
     ?.filter(
       (p) =>
@@ -75,7 +80,7 @@ export function CareStoryDetailPage() {
         <div className="mb-12 animate-fade-in-delay">
           <div className="relative overflow-hidden rounded-md h-96 md:h-125 bg-accent group shadow-sm">
             <Image
-              src={getAzureImageUrl(story?.family_photo) || "/placeholder.svg"}
+              src={familyPhoto || "/placeholder.svg"}
               alt={story?.title || ""}
               width={500}
               height={500}
