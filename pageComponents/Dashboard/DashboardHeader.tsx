@@ -61,7 +61,7 @@ const DashboardHeader = ({ HeaderTitleComponent }: DashboardHeaderProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
+                {/* <DropdownMenuItem>Profile</DropdownMenuItem> */}
                 <DropdownMenuItem onClick={openDialog}>
                   Settings
                 </DropdownMenuItem>
