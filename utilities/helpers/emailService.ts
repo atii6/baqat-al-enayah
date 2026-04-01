@@ -11,11 +11,11 @@ const transporter = nodemailer.createTransport({
 export const sendEmail = async (
   to: string,
   subject: string,
-  htmlContent: string
+  htmlContent: string,
 ) => {
   try {
     await transporter.sendMail({
-      from: `"GiftWell" <${process.env.EMAIL_SENDER}>`,
+      from: `"Baqat Al Enayah" <${process.env.EMAIL_SENDER}>`,
       to,
       subject,
       html: htmlContent,
