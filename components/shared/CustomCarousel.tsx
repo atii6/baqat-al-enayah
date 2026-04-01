@@ -46,9 +46,12 @@ function CustomCarousel({ items, isSlideCountVisible = false }: Props) {
             </CarouselItem>
           ))}
         </CarouselContent>
-
-        <CarouselPrevious />
-        <CarouselNext />
+        {items.length > 2 && (
+          <>
+            <CarouselPrevious />
+            <CarouselNext />
+          </>
+        )}
       </Carousel>
 
       {isSlideCountVisible && (
